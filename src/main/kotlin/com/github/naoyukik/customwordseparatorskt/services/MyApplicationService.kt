@@ -1,6 +1,6 @@
-package org.jetbrains.plugins.template.services
+package com.github.naoyukik.customwordseparatorskt.services
 
-import org.jetbrains.plugins.template.MyBundle
+import com.github.naoyukik.customwordseparatorskt.MyBundle
 
 class MyApplicationService {
 
