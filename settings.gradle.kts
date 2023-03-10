@@ -1,1 +1,1 @@
-rootProject.name = "custom-word-separators-kt"
+rootProject.name = "customize-word-separators-kt"

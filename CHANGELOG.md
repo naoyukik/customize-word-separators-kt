@@ -1,7 +1,12 @@
 <!-- Keep a Changelog guide -> https://keepachangelog.com -->
 
-# custom-word-separators-kt Changelog
+# Customize Word Separators Changelog
 
 ## [Unreleased]
-### Added
-- Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
+- Mouse support.
+- CamelHumps support (Caret Move, Caret Move with Selection).
+
+## [0.4.1] - 2023-03-10
+
+### Changed
+- Use [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template).
