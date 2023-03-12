@@ -1,16 +1,16 @@
 <idea-plugin>
     <id>net.dstribe.customize_word_separators</id>
-    <name>Custom Word Separators</name>
+    <name>Customize Word Separators</name>
     <vendor email="mmaga+github@dstribe.net" url="https://github.com/naoyukik/customize-word-separators-kt">DsTribe</vendor>
 
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationConfigurable
+        <projectConfigurable
                 groupId="editor"
                 instance="net.dstribe.customize_word_separators.settings.AppSettingsConfigurable"
                 id="preference.CustomizeWordSeparatorsConfigurable"/>
-        <applicationService
+        <projectService
                 serviceImplementation="net.dstribe.customize_word_separators.settings.AppSettingsState"/>
     </extensions>
 

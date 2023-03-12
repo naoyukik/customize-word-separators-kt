@@ -32,7 +32,7 @@ class AppSettingsComponent {
         return customizedPatterns.text
     }
 
-    fun setCustomizedPatterns(newText: String) {
+    fun setCustomizedPatterns(newText: String?) {
         customizedPatterns.text = newText
     }
 }

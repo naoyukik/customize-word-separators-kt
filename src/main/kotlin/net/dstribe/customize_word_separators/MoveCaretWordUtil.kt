@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.IdeActions
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.actionSystem.EditorActionManager
 import com.intellij.openapi.util.TextRange
+import net.dstribe.customize_word_separators.settings.AppSettingsConfigurable
 import net.dstribe.customize_word_separators.settings.AppSettingsState
 import kotlin.collections.set
 
@@ -25,7 +26,7 @@ class MoveCaretWordUtil {
         val currentCaretOffset: Int = caret.offset
         val selectionStart: Int = caret.leadSelectionOffset
 
-        state = editor.project?.let { AppSettingsState.getInstance() }
+        state = editor.project?.let { AppSettingsState.getInstance(it) }
 
         if (isNext && currentCaretOffset == document.textLength) return
 
@@ -167,8 +168,8 @@ class MoveCaretWordUtil {
 
     private fun getUserPatterns(): LinkedHashMap<String, String> {
         val patternMap = LinkedHashMap<String, String>()
-//        val userPatterns = state?.myState?.customPattern1
-        val userPatterns: String? = state?.customPattern1
+        val userPatterns = state?.myState?.customPattern1?.trim()
+//        val userPatterns: String? = AppSettingsConfigurable?.myState.customPattern1
         if (userPatterns.isNullOrEmpty()) {
             return patternMap
         }

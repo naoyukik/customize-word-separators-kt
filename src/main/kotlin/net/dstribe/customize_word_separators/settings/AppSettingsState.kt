@@ -1,32 +1,35 @@
 package net.dstribe.customize_word_separators.settings
 
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
-import com.intellij.util.xmlb.XmlSerializerUtil
+import com.intellij.openapi.components.service
+import com.intellij.openapi.project.Project
 
 
 @State(
     name = "CustomizeWordSeparatorsState",
     storages = [Storage("CustomizeWordSeparatorsState.xml")]
 )
-class AppSettingsState : PersistentStateComponent<AppSettingsState> {
-    public var customPattern1: String = "John Q. Public"
-    public var ideaStatus: Boolean = false
+class AppSettingsState(val project: Project) : PersistentStateComponent<AppSettingsState.State> {
+    val myState = State()
+
+    class State {
+        var customPattern1: String = ""
+    }
 
     companion object {
         @JvmStatic
-        fun getInstance(): AppSettingsState {
-            return ApplicationManager.getApplication().getService(AppSettingsState::class.java)
+        fun getInstance(project: Project): AppSettingsState {
+            return project.service()
         }
     }
 
-    override fun getState(): AppSettingsState? {
-        return this
+    override fun getState(): State {
+        return myState
     }
 
-    override fun loadState(state: AppSettingsState) {
-        XmlSerializerUtil.copyBean(state, this)
+    override fun loadState(state: State) {
+        myState.customPattern1 = state.customPattern1.trim()
     }
 }
