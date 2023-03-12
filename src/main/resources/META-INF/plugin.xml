@@ -1,18 +1,46 @@
-<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.naoyukik.customwordseparatorskt</id>
-    <name>IntelliJ Platform Plugin custom-word-separators-kt</name>
-    <vendor>naoyukik</vendor>
+    <id>net.dstribe.customize_word_separators</id>
+    <name>Customize Word Separators</name>
+    <vendor email="mmaga+github@dstribe.net" url="https://github.com/naoyukik/customize-word-separators-kt">DsTribe</vendor>
 
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.naoyukik.customwordseparatorskt.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.naoyukik.customwordseparatorskt.services.MyProjectService"/>
+        <projectConfigurable
+                groupId="editor"
+                instance="net.dstribe.customize_word_separators.settings.AppSettingsConfigurable"
+                id="preference.CustomizeWordSeparatorsConfigurable"/>
+        <projectService
+                serviceImplementation="net.dstribe.customize_word_separators.settings.AppSettingsState"/>
     </extensions>
 
-    <applicationListeners>
-        <listener class="com.github.naoyukik.customwordseparatorskt.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </applicationListeners>
+    <application-components>
+    </application-components>
+
+    <project-components>
+    </project-components>
+
+    <actions>
+        <group id="dstribe.customizeWordSeparators" text="Customize Word Separators"
+               description="Customize word separators" popup="true">
+            <add-to-group group-id="EditMenu" anchor="last"/>
+            <action class="net.dstribe.customize_word_separators.NextWordAction"
+                    id="CustomizeWordSeparators.NextWord"
+                    text="Move Caret to Next Word"
+                    description="Move next word"/>
+            <action class="net.dstribe.customize_word_separators.PrevWordAction"
+                    id="CustomizeWordSeparators.PrevWord"
+                    text="Move Caret to Prev Word"
+                    description="Move prev word"/>
+            <action class="net.dstribe.customize_word_separators.NextWordWithSelectionAction"
+                    id="CustomizeWordSeparators.NextWordWithSelection"
+                    text="Move Caret to Next Word with Selection"
+                    description="Move next word with Selection"/>
+            <action class="net.dstribe.customize_word_separators.PrevWordWithSelectionAction"
+                    id="CustomizeWordSeparators.PrevWordWithSelection"
+                    text="Move Caret to Prev Word with Selection"
+                    description="Move prev word with Selection"/>
+        </group>
+    </actions>
+
 </idea-plugin>
