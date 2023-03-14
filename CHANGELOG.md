@@ -4,10 +4,10 @@
 
 ## [Unreleased]
 
-## [0.4.2] - 2023-03-12
+## [0.4.3] - 2023-03-14
 
 ### Changed
-- Use [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template).
+- Change pluginSinceBuild number to 193
 
 [Unreleased]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.4.2...HEAD
 [0.4.2]: https://github.com/naoyukik/customize-word-separators-kt/commits/v0.4.2
