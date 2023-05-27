@@ -4,10 +4,10 @@
 
 ## [Unreleased]
 
-## [0.4.4] - 2023-05-24
+## [0.4.5] - 2023-05-27
 
 ### Changed
-- Change pluginSinceBuild number to 232
+- Add Plugin Icon
 
 [Unreleased]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.4.4...HEAD
 [0.4.4]: https://github.com/naoyukik/customize-word-separators-kt/commits/v0.4.4
