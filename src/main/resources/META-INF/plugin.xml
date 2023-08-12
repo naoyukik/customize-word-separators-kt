@@ -7,6 +7,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <projectConfigurable
+                displayName="Customize Word Separators"
                 groupId="editor"
                 instance="net.dstribe.customize_word_separators.settings.AppSettingsConfigurable"
                 id="preference.CustomizeWordSeparatorsConfigurable"/>
