@@ -7,6 +7,7 @@
 ## [0.4.6] - 2023-08-12
 
 ### Changed
+- Add display name to `plugin.xml`
 - fixed Plugin Icon. Thanks to My best friend Kaorin!
 
 [Unreleased]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.4.5...HEAD
