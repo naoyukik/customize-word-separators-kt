@@ -43,6 +43,9 @@ If you want to replace the current shortcut key for moving the cursor, press the
 
 現在のカーソル移動のショートカットキーを差し替える場合、設定時に「他のキーを削除するか」と聞かれるので削除ボタンを押します。
 
+## Special Thanks
+- The plugin icon is by my best friend Kaorin. Thank you!
+
 ---
 Plugin based on the [IntelliJ Platform Plugin Template][template].
 
