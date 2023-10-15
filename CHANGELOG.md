@@ -4,13 +4,13 @@
 
 ## [Unreleased]
 
-## [0.4.6] - 2023-08-12
+## [0.5.0] - 2023-10-15
 
 ### Changed
-- Add display name to `plugin.xml`
-- fixed Plugin Icon. Thanks to My best friend Kaorin!
+- Add caret navigation for text fields
 
-[Unreleased]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.4.5...HEAD
+[Unreleased]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.4.6...HEAD
+[0.4.6]: https://github.com/naoyukik/customize-word-separators-kt/commits/v0.4.6
 [0.4.5]: https://github.com/naoyukik/customize-word-separators-kt/commits/v0.4.5
 [0.4.4]: https://github.com/naoyukik/customize-word-separators-kt/commits/v0.4.4
 [0.4.3]: https://github.com/naoyukik/customize-word-separators-kt/commits/v0.4.3
