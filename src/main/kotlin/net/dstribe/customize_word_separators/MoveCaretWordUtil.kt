@@ -89,7 +89,7 @@ class MoveCaretWordUtil {
         setupSelection(caret, isWithSelection, selectionStart)
     }
 
-    fun moveCaretWordForTextField(isNext: Boolean, e: AnActionEvent) {
+    fun moveCaretWordForTextField(isNext: Boolean, isWithSelection: Boolean, e: AnActionEvent) {
         val component = e.getData(PlatformDataKeys.CONTEXT_COMPONENT)
         if (component is JTextField) {
             val currentCaretPosition = component.caretPosition
@@ -109,7 +109,19 @@ class MoveCaretWordUtil {
                         return
                     }
                     val wordLength = getWordLength(isNext, matchList)
-                    component.setCaretPosition(it + wordLength)
+                    val movedCaretPosition = it + wordLength
+
+                    if (isWithSelection) {
+                        if (isNext) {
+                            component.select(component.selectionStart, movedCaretPosition)
+                        }
+                        if (!isNext) {
+                            component.setCaretPosition(component.selectionEnd)
+                            component.moveCaretPosition(movedCaretPosition)
+                        }
+                    } else {
+                        component.caretPosition = movedCaretPosition
+                    }
                 }
             }
         }

@@ -20,7 +20,7 @@ class NextWordAction : AnAction() {
             actionHandler.execute(it, null, e.dataContext)
         } ?: run {
             val moveCaretWordUtil = MoveCaretWordUtil()
-            moveCaretWordUtil.moveCaretWordForTextField(isNext, e)
+            moveCaretWordUtil.moveCaretWordForTextField(isNext, isWithSelection, e)
         }
     }
 }

@@ -8,12 +8,19 @@ import com.intellij.openapi.editor.actionSystem.EditorActionHandler
 
 class PrevWordWithSelectionAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
-        val editor: Editor = e.getRequiredData(CommonDataKeys.EDITOR)
-        val actionHandler: EditorActionHandler = NextPrevWordHandler(
-            myNext = false,
-            myWithSelection = true,
-            e = e
-        )
-        actionHandler.execute(editor, null, e.dataContext)
+        val isNext = false
+        val isWithSelection = true
+        val editor: Editor? = e.getData(CommonDataKeys.EDITOR)
+        editor?.let {
+            val actionHandler: EditorActionHandler = NextPrevWordHandler(
+                    myNext = isNext,
+                    myWithSelection = isWithSelection,
+                    e = e
+            )
+            actionHandler.execute(it, null, e.dataContext)
+        } ?: run {
+            val moveCaretWordUtil = MoveCaretWordUtil()
+            moveCaretWordUtil.moveCaretWordForTextField(isNext, isWithSelection, e)
+        }
     }
 }

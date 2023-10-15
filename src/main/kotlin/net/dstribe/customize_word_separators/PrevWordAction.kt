@@ -23,7 +23,7 @@ class PrevWordAction : AnAction() {
             actionHandler.execute(it, null, e.dataContext)
         } ?: run {
             val moveCaretWordUtil = MoveCaretWordUtil()
-            moveCaretWordUtil.moveCaretWordForTextField(false, e)
+            moveCaretWordUtil.moveCaretWordForTextField(isNext, isWithSelection, e)
         }
     }
 }
