@@ -3,17 +3,27 @@ package net.dstribe.customize_word_separators
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.actionSystem.EditorActionHandler
+import com.intellij.openapi.util.TextRange
+import javax.swing.JTextField
 
 class PrevWordAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
-        val editor: Editor = e.getRequiredData(CommonDataKeys.EDITOR)
-        val actionHandler: EditorActionHandler = NextPrevWordHandler(
-            myNext = false,
-            myWithSelection = false,
-            e = e
-        )
-        actionHandler.execute(editor, null, e.dataContext)
+        val isNext = false
+        val isWithSelection = false
+        val editor: Editor? = e.getData(CommonDataKeys.EDITOR)
+        editor?.let {
+            val actionHandler: EditorActionHandler = NextPrevWordHandler(
+                    myNext = isNext,
+                    myWithSelection = isWithSelection,
+                    e = e
+            )
+            actionHandler.execute(it, null, e.dataContext)
+        } ?: run {
+            val moveCaretWordUtil = MoveCaretWordUtil()
+            moveCaretWordUtil.moveCaretWordForTextField(false, e)
+        }
     }
 }
