@@ -9,7 +9,7 @@ This is a word separator custom plugin for the IntelliJ platform.
 
 By changing the position of the word separator, the cursor can be moved by each type of kanji, hiragana, katakana, and alphanumeric character when moving the cursor.
 
-IntelliJプラットフォーム向けの単語区切りカスタムプラグインです。  
+IntelliJプラットフォーム向けの単語区切りカスタム・カーソル移動プラグインです。  
 
 単語区切り位置を変更することで、カーソル移動時に漢字・ひらがな・カタカナ・英数字を判別し、種別毎にカーソルが移動可能となります。
 <!-- Plugin description end -->
