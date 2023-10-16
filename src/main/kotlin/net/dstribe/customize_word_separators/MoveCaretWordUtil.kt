@@ -1,12 +1,16 @@
 package net.dstribe.customize_word_separators
 
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.IdeActions
+import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.actionSystem.EditorActionManager
 import com.intellij.openapi.util.TextRange
+import com.jetbrains.rd.generator.nova.PredefinedType
 import net.dstribe.customize_word_separators.settings.AppSettingsConfigurable
 import net.dstribe.customize_word_separators.settings.AppSettingsState
+import javax.swing.JTextField
 import kotlin.collections.set
 
 
@@ -83,6 +87,44 @@ class MoveCaretWordUtil {
         caret.moveToOffset(newOffset)
         EditorModificationUtil.scrollToCaret(editor)
         setupSelection(caret, isWithSelection, selectionStart)
+    }
+
+    fun moveCaretWordForTextField(isNext: Boolean, isWithSelection: Boolean, e: AnActionEvent) {
+        val component = e.getData(PlatformDataKeys.CONTEXT_COMPONENT)
+        if (component is JTextField) {
+            val currentCaretPosition = component.caretPosition
+            currentCaretPosition.let {
+                val textRangeStartOffset = 0
+
+                var textLength = getTextLength(textRangeStartOffset, it)
+                var lineText = component.getText(textRangeStartOffset, textLength)
+                if (isNext) {
+                    textLength = component.getText().length
+                    lineText = component.getText(currentCaretPosition, textLength - currentCaretPosition)
+                }
+
+                if (it > -1) {
+                    val matchList = wordParse(lineText)
+                    if (matchList.isEmpty()) {
+                        return
+                    }
+                    val wordLength = getWordLength(isNext, matchList)
+                    val movedCaretPosition = it + wordLength
+
+                    if (isWithSelection) {
+                        if (isNext) {
+                            component.select(component.selectionStart, movedCaretPosition)
+                        }
+                        if (!isNext) {
+                            component.setCaretPosition(component.selectionEnd)
+                            component.moveCaretPosition(movedCaretPosition)
+                        }
+                    } else {
+                        component.caretPosition = movedCaretPosition
+                    }
+                }
+            }
+        }
     }
 
     private fun getWordLength(isNext: Boolean, matchList: List<String>): Int {
