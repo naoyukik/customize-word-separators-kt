@@ -7,9 +7,11 @@
 ## [0.5.0] - 2023-10-15
 
 ### Changed
+
 - Add caret navigation for text fields
 
-[Unreleased]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.4.6...HEAD
+[Unreleased]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/naoyukik/customize-word-separators-kt/commits/v0.5.0
 [0.4.6]: https://github.com/naoyukik/customize-word-separators-kt/commits/v0.4.6
 [0.4.5]: https://github.com/naoyukik/customize-word-separators-kt/commits/v0.4.5
 [0.4.4]: https://github.com/naoyukik/customize-word-separators-kt/commits/v0.4.4
