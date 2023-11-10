@@ -5,6 +5,7 @@ fun properties(key: String) = providers.gradleProperty(key)
 fun environment(key: String) = providers.environmentVariable(key)
 
 plugins {
+    id("io.gitlab.arturbosch.detekt").version("1.23.3")
     id("java") // Java support
     alias(libs.plugins.kotlin) // Kotlin support
     alias(libs.plugins.gradleIntelliJPlugin) // Gradle IntelliJ Plugin
@@ -66,6 +67,11 @@ koverReport {
             onCheck = true
         }
     }
+}
+
+detekt {
+    buildUponDefaultConfig = true // preconfigure defaults
+    allRules = false // activate all available (even unstable) rules.
 }
 
 tasks {
@@ -132,12 +138,12 @@ tasks {
 //    signPlugin {
 //        certificateChainFile.set(file("certificate/chain.crt"))
 //        privateKeyFile.set(file("certificate/private.pem"))
-//        password.set("TJTzJn_XG4wV8CtJtJ8X")
+//        password.set("password")
 //    }
 //
 //    publishPlugin {
 //        dependsOn("patchChangelog")
-//        token.set("perm:bW1hZ2EramV0YnJhaW5z.OTItMTY3OQ==.X0oQCrDxQ2BHoemyiNCfl6LcJwJroC")
+//        token.set("perm:token")
 //        // The pluginVersion is based on the SemVer (https://semver.org) and supports pre-release labels, like 2.1.7-alpha.3
 //        // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
 //        // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
