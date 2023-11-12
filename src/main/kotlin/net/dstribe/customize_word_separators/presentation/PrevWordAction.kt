@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.actionSystem.EditorActionHandler
-import net.dstribe.customize_word_separators.MoveCaretWordUtil
+import net.dstribe.customize_word_separators.application.MoveCaretWordService
 import net.dstribe.customize_word_separators.NextPrevWordHandler
 
 class PrevWordAction : AnAction() {
@@ -21,8 +21,8 @@ class PrevWordAction : AnAction() {
             )
             actionHandler.execute(it, null, e.dataContext)
         } ?: run {
-            val moveCaretWordUtil = MoveCaretWordUtil()
-            moveCaretWordUtil.moveCaretWordForTextField(isNext, isWithSelection, e)
+            val moveCaretWordService = MoveCaretWordService()
+            moveCaretWordService.moveCaretWordForTextField(isNext, isWithSelection, e)
         }
     }
 }

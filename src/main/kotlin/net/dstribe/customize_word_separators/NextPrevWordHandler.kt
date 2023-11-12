@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.editor.Caret
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.actionSystem.EditorActionHandler
+import net.dstribe.customize_word_separators.application.MoveCaretWordService
 
 class NextPrevWordHandler(
     private var myNext: Boolean,
@@ -13,14 +14,13 @@ class NextPrevWordHandler(
 ) : EditorActionHandler(true) {
     override fun doExecute(editor: Editor, caret: Caret?, dataContext: DataContext?) {
         if (caret != null) {
-            val moveCaretWordUtil = MoveCaretWordUtil()
-            moveCaretWordUtil.moveCaretWord(
+            val moveCaretWordService = MoveCaretWordService()
+            moveCaretWordService.moveCaretWord(
                 editor,
                 caret,
                 myNext,
                 myWithSelection,
-                dataContext,
-                false
+                dataContext
             )
         }
     }

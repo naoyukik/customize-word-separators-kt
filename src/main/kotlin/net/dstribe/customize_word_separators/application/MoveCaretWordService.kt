@@ -1,20 +1,21 @@
-package net.dstribe.customize_word_separators
+package net.dstribe.customize_word_separators.application
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.IdeActions
 import com.intellij.openapi.actionSystem.PlatformDataKeys
-import com.intellij.openapi.editor.*
+import com.intellij.openapi.editor.Caret
+import com.intellij.openapi.editor.Document
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.EditorModificationUtil
+import com.intellij.openapi.editor.FoldRegion
 import com.intellij.openapi.editor.actionSystem.EditorActionManager
 import com.intellij.openapi.util.TextRange
-import com.jetbrains.rd.generator.nova.PredefinedType
-import net.dstribe.customize_word_separators.settings.AppSettingsConfigurable
 import net.dstribe.customize_word_separators.settings.AppSettingsState
 import javax.swing.JTextField
 import kotlin.collections.set
 
-
-class MoveCaretWordUtil {
+class MoveCaretWordService {
     private var state: AppSettingsState? = null
 
     fun moveCaretWord(
@@ -22,8 +23,7 @@ class MoveCaretWordUtil {
         caret: Caret,
         isNext: Boolean,
         isWithSelection: Boolean,
-        dataContext: DataContext?,
-        camel: Boolean?
+        dataContext: DataContext?
     ) {
         val document: Document = editor.document
         val logicalPos = caret.logicalPosition
@@ -137,7 +137,6 @@ class MoveCaretWordUtil {
         }
         val lastWord = matchList[position]
         return lastWord.length * orientation
-
     }
 
     private fun useBuiltinWordAction(
