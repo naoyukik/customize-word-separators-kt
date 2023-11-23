@@ -25,38 +25,32 @@ class MoveCaretWordService {
         isWithSelection: Boolean,
         dataContext: DataContext?
     ) {
-        val document: Document = editor.document
-        val logicalPos = caret.logicalPosition
-        val currentCaretOffset: Int = caret.offset
-        val selectionStart: Int = caret.leadSelectionOffset
-
         state = editor.project?.let { AppSettingsState.getInstance(it) }
 
+        val document: Document = editor.document
+        val currentCaretOffset: Int = caret.offset
         if (isNext && currentCaretOffset == document.textLength) return
 
         val newOffset: Int
 
+        val selectionStart: Int = caret.leadSelectionOffset
         val currentFoldRegion: FoldRegion? =
             editor.foldingModel.getCollapsedRegionAtOffset(currentCaretOffset)
         if (currentFoldRegion != null) {
             newOffset = currentFoldRegion.endOffset
         } else {
-            val startLineOffset: Int = document.getLineStartOffset(logicalPos.line)
+            val logicalPos = caret.logicalPosition
+
             val currentLineNumber: Int = logicalPos.line
-            val endLineOffset: Int = document.getLineEndOffset(currentLineNumber)
             if (currentLineNumber >= document.lineCount) return
 
             // Preparation get words
-            var moveRange = 1
-            var textRangeStartOffset: Int = currentCaretOffset
-            var textRangeEndOffset: Int = endLineOffset
-            var boundaryOffset: Int = textRangeEndOffset
-            if (!isNext) {
-                moveRange = -1
-                textRangeStartOffset = startLineOffset
-                textRangeEndOffset = currentCaretOffset
-                boundaryOffset = textRangeStartOffset
-            }
+            val startLineOffset: Int = document.getLineStartOffset(logicalPos.line)
+            val moveRange = if (isNext) 1 else -1
+            val textRangeStartOffset: Int = if (isNext) currentCaretOffset else startLineOffset
+            val textRangeEndOffset: Int =
+                if (isNext) document.getLineEndOffset(currentLineNumber) else currentCaretOffset
+            val boundaryOffset: Int = if (isNext) textRangeEndOffset else textRangeStartOffset
 
             val documentLength = document.textLength
             if (currentCaretOffset < 0 || currentCaretOffset > documentLength) return
@@ -96,12 +90,18 @@ class MoveCaretWordService {
             currentCaretPosition.let {
                 val textRangeStartOffset = 0
 
-                var textLength = getTextLength(textRangeStartOffset, it)
-                var lineText = component.getText(textRangeStartOffset, textLength)
-                if (isNext) {
-                    textLength = component.getText().length
-                    lineText = component.getText(currentCaretPosition, textLength - currentCaretPosition)
-                }
+                val textLength = if (isNext) component.getText().length else getTextLength(textRangeStartOffset, it)
+                val lineText = if (isNext) component.getText(
+                    currentCaretPosition,
+                    textLength - currentCaretPosition
+                ) else component.getText(textRangeStartOffset, textLength)
+
+                // var textLength = getTextLength(textRangeStartOffset, it)
+                // var lineText = component.getText(textRangeStartOffset, textLength)
+                // if (isNext) {
+                //     textLength = component.getText().length
+                //     lineText = component.getText(currentCaretPosition, textLength - currentCaretPosition)
+                // }
 
                 if (it > -1) {
                     val matchList = wordParse(lineText)
@@ -114,8 +114,7 @@ class MoveCaretWordService {
                     if (isWithSelection) {
                         if (isNext) {
                             component.select(component.selectionStart, movedCaretPosition)
-                        }
-                        if (!isNext) {
+                        } else {
                             component.setCaretPosition(component.selectionEnd)
                             component.moveCaretPosition(movedCaretPosition)
                         }
@@ -129,14 +128,9 @@ class MoveCaretWordService {
 
     private fun getWordLength(isNext: Boolean, matchList: List<String>): Int {
         val matchSize = matchList.size
-        var position = 0
-        var orientation = 1
-        if (!isNext) {
-            position = matchSize - 1
-            orientation = -1
-        }
-        val lastWord = matchList[position]
-        return lastWord.length * orientation
+        val position = if (isNext) 0 else matchSize - 1
+        val orientation = if (isNext) 1 else -1
+        return matchList[position].length * orientation
     }
 
     private fun useBuiltinWordAction(
@@ -172,6 +166,7 @@ class MoveCaretWordService {
         return result
     }
 
+    @Suppress("MaxLineLength")
     private fun getDefaultPatterns(): LinkedHashMap<String, String> {
         val patterns = LinkedHashMap<String, String>(26)
         patterns["cjk"] = "[\\u3400-\\u9FFF\\uF900-\\uFAFF]+"
@@ -210,14 +205,13 @@ class MoveCaretWordService {
     private fun getUserPatterns(): LinkedHashMap<String, String> {
         val patternMap = LinkedHashMap<String, String>()
         val userPatterns = state?.myState?.customPattern1?.trim()
-//        val userPatterns: String? = AppSettingsConfigurable?.myState.customPattern1
         if (userPatterns.isNullOrEmpty()) {
             return patternMap
         }
-        var items: Array<String>
+
         val lines: Array<String> = userPatterns.split("\n").toTypedArray()
         for (line: String in lines) {
-            items = line.split(",").toTypedArray()
+            val items = line.split(",").toTypedArray()
             patternMap[items[0]] = items[1].trim()
         }
 
