@@ -29,7 +29,7 @@ class AppSettingsComponent {
         return mainPanel
     }
 
-    fun getPreferredFocusedComponent(): JComponent? {
+    fun getPreferredFocusedComponent(): JComponent {
         return customizedPatterns
     }
 
