@@ -6,7 +6,6 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.actionSystem.EditorActionHandler
 import net.dstribe.customize_word_separators.application.MoveCaretWordService
-import net.dstribe.customize_word_separators.NextPrevWordHandler
 
 class NextWordWithSelectionAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
@@ -14,7 +13,7 @@ class NextWordWithSelectionAction : AnAction() {
         val isWithSelection = true
         val editor: Editor? = e.getData(CommonDataKeys.EDITOR)
         editor?.let {
-            val actionHandler: EditorActionHandler = NextPrevWordHandler(
+            val actionHandler: EditorActionHandler = NextPrevWordEditorActionHandler(
                     isNext = isNext,
                     isWithSelection = isWithSelection,
                     e = e
