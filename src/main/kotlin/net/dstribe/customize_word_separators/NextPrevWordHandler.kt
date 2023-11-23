@@ -8,8 +8,8 @@ import com.intellij.openapi.editor.actionSystem.EditorActionHandler
 import net.dstribe.customize_word_separators.application.MoveCaretWordService
 
 class NextPrevWordHandler(
-    private var myNext: Boolean,
-    private var myWithSelection: Boolean,
+    private val isNext: Boolean,
+    private val isWithSelection: Boolean,
     val e: AnActionEvent
 ) : EditorActionHandler(true) {
     override fun doExecute(editor: Editor, caret: Caret?, dataContext: DataContext?) {
@@ -18,8 +18,8 @@ class NextPrevWordHandler(
             moveCaretWordService.moveCaretWord(
                 editor,
                 caret,
-                myNext,
-                myWithSelection,
+                isNext,
+                isWithSelection,
                 dataContext
             )
         }
