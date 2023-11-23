@@ -5,7 +5,6 @@ import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.IdeActions
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.editor.Caret
-import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.editor.FoldRegion
@@ -27,13 +26,13 @@ class MoveCaretWordService {
     ) {
         state = editor.project?.let { AppSettingsState.getInstance(it) }
 
-        val document: Document = editor.document
-        val currentCaretOffset: Int = caret.offset
+        val document = editor.document
+        val currentCaretOffset = caret.offset
         if (isNext && currentCaretOffset == document.textLength) return
 
         val newOffset: Int
 
-        val selectionStart: Int = caret.leadSelectionOffset
+        val selectionStart = caret.leadSelectionOffset
         val currentFoldRegion: FoldRegion? =
             editor.foldingModel.getCollapsedRegionAtOffset(currentCaretOffset)
         if (currentFoldRegion != null) {
@@ -41,16 +40,16 @@ class MoveCaretWordService {
         } else {
             val logicalPos = caret.logicalPosition
 
-            val currentLineNumber: Int = logicalPos.line
+            val currentLineNumber = logicalPos.line
             if (currentLineNumber >= document.lineCount) return
 
             // Preparation get words
-            val startLineOffset: Int = document.getLineStartOffset(logicalPos.line)
+            val startLineOffset = document.getLineStartOffset(logicalPos.line)
             val moveRange = if (isNext) 1 else -1
-            val textRangeStartOffset: Int = if (isNext) currentCaretOffset else startLineOffset
-            val textRangeEndOffset: Int =
+            val textRangeStartOffset = if (isNext) currentCaretOffset else startLineOffset
+            val textRangeEndOffset =
                 if (isNext) document.getLineEndOffset(currentLineNumber) else currentCaretOffset
-            val boundaryOffset: Int = if (isNext) textRangeEndOffset else textRangeStartOffset
+            val boundaryOffset = if (isNext) textRangeEndOffset else textRangeStartOffset
 
             val documentLength = document.textLength
             if (currentCaretOffset < 0 || currentCaretOffset > documentLength) return
@@ -95,13 +94,6 @@ class MoveCaretWordService {
                     currentCaretPosition,
                     textLength - currentCaretPosition
                 ) else component.getText(textRangeStartOffset, textLength)
-
-                // var textLength = getTextLength(textRangeStartOffset, it)
-                // var lineText = component.getText(textRangeStartOffset, textLength)
-                // if (isNext) {
-                //     textLength = component.getText().length
-                //     lineText = component.getText(currentCaretPosition, textLength - currentCaretPosition)
-                // }
 
                 if (it > -1) {
                     val matchList = wordParse(lineText)
@@ -209,8 +201,8 @@ class MoveCaretWordService {
             return patternMap
         }
 
-        val lines: Array<String> = userPatterns.split("\n").toTypedArray()
-        for (line: String in lines) {
+        val lines = userPatterns.split("\n").toTypedArray()
+        for (line in lines) {
             val items = line.split(",").toTypedArray()
             patternMap[items[0]] = items[1].trim()
         }
