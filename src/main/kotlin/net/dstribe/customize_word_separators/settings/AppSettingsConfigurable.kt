@@ -3,14 +3,12 @@ package net.dstribe.customize_word_separators.settings
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
 import org.jetbrains.annotations.Nls
-import javax.swing.*
-
+import javax.swing.JComponent
 
 /**
  * Provides controller functionality for application settings.
  */
-class AppSettingsConfigurable(private val project: Project) : Configurable {
-
+class AppSettingsConfigurable(project: Project) : Configurable {
     private var mySettingsComponent: AppSettingsComponent? = null
     private var mySettingsState: AppSettingsState? = null
 

@@ -10,8 +10,13 @@ import javax.swing.JPanel
  * Supports creating and managing a [JPanel] for the Settings Dialog.
  */
 class AppSettingsComponent {
+    companion object {
+        private const val TEXT_AREA_ROWS = 5
+        private const val TEXT_AREA_COLUMNS = 30
+    }
+
     private var mainPanel: JPanel? = null
-    private val customizedPatterns = JBTextArea(25, 10)
+    private val customizedPatterns = JBTextArea(TEXT_AREA_ROWS, TEXT_AREA_COLUMNS)
 
     init {
         mainPanel = FormBuilder.createFormBuilder()
