@@ -4,6 +4,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.IdeActions
 import com.intellij.openapi.actionSystem.PlatformDataKeys
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Caret
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorModificationUtil
@@ -82,7 +83,13 @@ class MoveCaretWordService {
         setupSelection(caret, isWithSelection, selectionStart)
     }
 
-    fun moveCaretWordForTextField(isNext: Boolean, isWithSelection: Boolean, e: AnActionEvent) {
+    fun moveCaretWordForTextField(
+        isNext: Boolean,
+        isWithSelection: Boolean,
+        e: AnActionEvent
+    ) {
+        state = e.project?.service<AppSettingsState>()
+
         val component = e.getData(PlatformDataKeys.CONTEXT_COMPONENT)
         if (component is JTextField) {
             val currentCaretPosition = component.caretPosition
