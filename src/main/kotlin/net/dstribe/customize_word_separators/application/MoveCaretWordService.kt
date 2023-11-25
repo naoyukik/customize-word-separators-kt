@@ -11,6 +11,7 @@ import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.editor.FoldRegion
 import com.intellij.openapi.editor.actionSystem.EditorActionManager
 import com.intellij.openapi.util.TextRange
+import net.dstribe.customize_word_separators.domain.SettingState
 import net.dstribe.customize_word_separators.settings.AppSettingsState
 import javax.swing.JTextField
 import kotlin.collections.set
@@ -25,7 +26,7 @@ class MoveCaretWordService {
         isWithSelection: Boolean,
         dataContext: DataContext?
     ) {
-        state = editor.project?.let { AppSettingsState.getInstance(it) }
+        state = SettingState().getAppSettingsState(editor)
 
         val document = editor.document
         val currentCaretOffset = caret.offset
@@ -88,7 +89,7 @@ class MoveCaretWordService {
         isWithSelection: Boolean,
         e: AnActionEvent
     ) {
-        state = e.project?.service<AppSettingsState>()
+        state = SettingState().getAppSettingsState(e)
 
         val component = e.getData(PlatformDataKeys.CONTEXT_COMPONENT)
         if (component is JTextField) {
