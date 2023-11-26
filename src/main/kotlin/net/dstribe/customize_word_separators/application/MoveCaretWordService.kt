@@ -12,6 +12,7 @@ import com.intellij.openapi.editor.FoldRegion
 import com.intellij.openapi.editor.actionSystem.EditorActionManager
 import com.intellij.openapi.util.TextRange
 import net.dstribe.customize_word_separators.domain.SettingState
+import net.dstribe.customize_word_separators.domain.WordParser
 import net.dstribe.customize_word_separators.settings.AppSettingsState
 import javax.swing.JTextField
 import kotlin.collections.set
@@ -40,6 +41,8 @@ class MoveCaretWordService {
         if (currentFoldRegion != null) {
             newOffset = currentFoldRegion.endOffset
         } else {
+            if (currentCaretOffset < 0 || currentCaretOffset > document.textLength) return
+
             val logicalPos = caret.logicalPosition
 
             val currentLineNumber = logicalPos.line
@@ -47,17 +50,14 @@ class MoveCaretWordService {
 
             // Preparation get words
             val startLineOffset = document.getLineStartOffset(logicalPos.line)
-            val moveRange = if (isNext) 1 else -1
             val textRangeStartOffset = if (isNext) currentCaretOffset else startLineOffset
             val textRangeEndOffset =
                 if (isNext) document.getLineEndOffset(currentLineNumber) else currentCaretOffset
             val boundaryOffset = if (isNext) textRangeEndOffset else textRangeStartOffset
 
-            val documentLength = document.textLength
-            if (currentCaretOffset < 0 || currentCaretOffset > documentLength) return
-
             /* If at BOL/EOL, move one character */
             if (currentCaretOffset == boundaryOffset) {
+                val moveRange = if (isNext) 1 else -1
                 caret.moveToOffset(currentCaretOffset + moveRange)
                 EditorModificationUtil.scrollToCaret(editor)
                 setupSelection(caret, isWithSelection, selectionStart)
@@ -68,7 +68,7 @@ class MoveCaretWordService {
             val textRange = TextRange.from(textRangeStartOffset, textLength)
             val lineText = document.getText(textRange)
 
-            val matchList = wordParse(lineText)
+            val matchList = WordParser(state).wordParse(lineText)
             if (matchList.isEmpty()) {
                 if (dataContext != null) {
                     useBuiltinWordAction(editor, caret, isNext, isWithSelection, dataContext)
@@ -94,33 +94,30 @@ class MoveCaretWordService {
         val component = e.getData(PlatformDataKeys.CONTEXT_COMPONENT)
         if (component is JTextField) {
             val currentCaretPosition = component.caretPosition
-            currentCaretPosition.let {
-                val textRangeStartOffset = 0
+            val textRangeStartOffset = 0
 
-                val textLength = if (isNext) component.getText().length else getTextLength(textRangeStartOffset, it)
-                val lineText = if (isNext) component.getText(
-                    currentCaretPosition,
-                    textLength - currentCaretPosition
-                ) else component.getText(textRangeStartOffset, textLength)
+            val textLength =
+                if (isNext) component.getText().length else getTextLength(textRangeStartOffset, currentCaretPosition)
+            val lineText = if (isNext) component.getText(
+                currentCaretPosition,
+                textLength - currentCaretPosition
+            ) else component.getText(textRangeStartOffset, textLength)
 
-                if (it > -1) {
-                    val matchList = wordParse(lineText)
-                    if (matchList.isEmpty()) {
-                        return
-                    }
-                    val wordLength = getWordLength(isNext, matchList)
-                    val movedCaretPosition = it + wordLength
+            if (currentCaretPosition > -1) {
+                val matchList = wordParse(lineText)
+                if (matchList.isEmpty()) {
+                    return
+                }
+                val wordLength = getWordLength(isNext, matchList)
+                val movedCaretPosition = currentCaretPosition + wordLength
 
-                    if (isWithSelection) {
-                        if (isNext) {
-                            component.select(component.selectionStart, movedCaretPosition)
-                        } else {
-                            component.setCaretPosition(component.selectionEnd)
-                            component.moveCaretPosition(movedCaretPosition)
-                        }
-                    } else {
-                        component.caretPosition = movedCaretPosition
-                    }
+                if (isNext && isWithSelection) {
+                    component.select(component.selectionStart, movedCaretPosition)
+                } else if (isNext) {
+                    component.setCaretPosition(component.selectionEnd)
+                    component.moveCaretPosition(movedCaretPosition)
+                } else {
+                    component.caretPosition = movedCaretPosition
                 }
             }
         }
