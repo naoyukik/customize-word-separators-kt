@@ -14,9 +14,9 @@ class PrevWordWithSelectionAction : AnAction() {
         val editor: Editor? = e.getData(CommonDataKeys.EDITOR)
         editor?.let {
             val actionHandler: EditorActionHandler = NextPrevWordEditorActionHandler(
-                    isNext = isNext,
-                    isWithSelection = isWithSelection,
-                    e = e
+                isNext = isNext,
+                isWithSelection = isWithSelection,
+                e = e
             )
             actionHandler.execute(it, null, e.dataContext)
         } ?: run {

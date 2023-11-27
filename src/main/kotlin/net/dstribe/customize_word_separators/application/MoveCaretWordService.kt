@@ -4,7 +4,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.IdeActions
 import com.intellij.openapi.actionSystem.PlatformDataKeys
-import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Caret
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorModificationUtil
@@ -98,10 +97,14 @@ class MoveCaretWordService {
 
             val textLength =
                 if (isNext) component.getText().length else getTextLength(textRangeStartOffset, currentCaretPosition)
-            val lineText = if (isNext) component.getText(
-                currentCaretPosition,
-                textLength - currentCaretPosition
-            ) else component.getText(textRangeStartOffset, textLength)
+            val lineText = if (isNext) {
+                component.getText(
+                    currentCaretPosition,
+                    textLength - currentCaretPosition
+                )
+            } else {
+                component.getText(textRangeStartOffset, textLength)
+            }
 
             if (currentCaretPosition > -1) {
                 val matchList = wordParse(lineText)

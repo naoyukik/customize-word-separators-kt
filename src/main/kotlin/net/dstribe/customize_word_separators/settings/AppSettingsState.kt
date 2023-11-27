@@ -6,7 +6,6 @@ import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 
-
 @State(
     name = "CustomizeWordSeparatorsState",
     storages = [Storage("CustomizeWordSeparatorsState.xml")]
