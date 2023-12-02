@@ -12,6 +12,7 @@ import com.intellij.openapi.util.TextRange
 import net.dstribe.customize_word_separators.domain.MoveCaretCommand
 import net.dstribe.customize_word_separators.domain.SettingState
 import net.dstribe.customize_word_separators.domain.WordParser
+import net.dstribe.customize_word_separators.domain.dto.ActionOptions
 import net.dstribe.customize_word_separators.domain.dto.EditorContext
 import net.dstribe.customize_word_separators.settings.AppSettingsState
 import javax.swing.JTextField
@@ -23,16 +24,15 @@ class MoveCaretWordService {
     @Suppress("ReturnCount")
     fun moveCaretWord(
         editorContext: EditorContext,
-        isNext: Boolean,
-        isWithSelection: Boolean,
+        actionOptions: ActionOptions
     ) {
-        val editor = editorContext.editor
-        val caret = editorContext.caret
-        val dataContext = editorContext.dataContext
+        val (editor, caret, dataContext) = editorContext
+        val (isNext, isWithSelection) = actionOptions
         state = SettingState().getAppSettingsState(editor)
 
         val document = editor.document
         val currentCaretOffset = caret.offset
+
         if (isNext && currentCaretOffset == document.textLength) return
 
         val newOffset: Int
@@ -59,7 +59,7 @@ class MoveCaretWordService {
 
             /* If at BOL/EOL, move one character */
             if (currentCaretOffset == boundaryOffset) {
-                val newOffset = if (isNext) 1 else -1
+                newOffset = currentCaretOffset + (if (isNext) 1 else -1)
                 MoveCaretCommand(
                     editorContext,
                     newOffset,
@@ -78,7 +78,10 @@ class MoveCaretWordService {
             val matchList = WordParser(state).wordParse(lineText)
             if (matchList.isEmpty()) {
                 if (dataContext != null) {
-                    useBuiltinWordAction(editor, caret, isNext, isWithSelection, dataContext)
+                    useBuiltinWordAction(
+                        editorContext,
+                        actionOptions
+                    )
                 }
                 return
             }
@@ -95,8 +98,7 @@ class MoveCaretWordService {
     }
 
     fun moveCaretWordForTextField(
-        isNext: Boolean,
-        isWithSelection: Boolean,
+        actionOptions: ActionOptions,
         e: AnActionEvent
     ) {
         state = SettingState().getAppSettingsState(e)
@@ -106,6 +108,7 @@ class MoveCaretWordService {
             val currentCaretPosition = component.caretPosition
             val textRangeStartOffset = 0
 
+            val (isNext, isWithSelection) = actionOptions
             val textLength =
                 if (isNext) component.getText().length else getTextLength(textRangeStartOffset, currentCaretPosition)
             val lineText = if (isNext) {
@@ -145,13 +148,12 @@ class MoveCaretWordService {
     }
 
     private fun useBuiltinWordAction(
-        editor: Editor,
-        caret: Caret,
-        isNext: Boolean,
-        isWithSelection: Boolean,
-        dataContext: DataContext
+        editorContext: EditorContext,
+        actionOptions: ActionOptions,
     ) {
+        val (isNext, isWithSelection) = actionOptions
         val actionManager = EditorActionManager.getInstance()
+
         var ideAction = IdeActions.ACTION_EDITOR_NEXT_WORD
         if (isWithSelection && !isNext) {
             ideAction = IdeActions.ACTION_EDITOR_PREVIOUS_WORD_WITH_SELECTION
@@ -161,7 +163,11 @@ class MoveCaretWordService {
             ideAction = IdeActions.ACTION_EDITOR_NEXT_WORD_WITH_SELECTION
         }
         val actionHandler = actionManager.getActionHandler(ideAction)
-        actionHandler.execute(editor, caret, dataContext)
+        actionHandler.execute(
+            editorContext.editor,
+            editorContext.caret,
+            editorContext.dataContext
+        )
     }
 
     private fun wordParse(character: String): List<String> {

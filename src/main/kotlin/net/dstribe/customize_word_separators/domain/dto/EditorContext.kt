@@ -5,7 +5,7 @@ import com.intellij.openapi.editor.Caret
 import com.intellij.openapi.editor.Editor
 
 data class EditorContext(
-    val caret: Caret,
     val editor: Editor,
+    val caret: Caret,
     val dataContext: DataContext?
 )
