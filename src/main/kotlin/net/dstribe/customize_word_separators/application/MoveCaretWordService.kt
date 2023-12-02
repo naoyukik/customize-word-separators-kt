@@ -6,12 +6,13 @@ import com.intellij.openapi.actionSystem.IdeActions
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.editor.Caret
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.editor.FoldRegion
 import com.intellij.openapi.editor.actionSystem.EditorActionManager
 import com.intellij.openapi.util.TextRange
+import net.dstribe.customize_word_separators.domain.MoveCaretCommand
 import net.dstribe.customize_word_separators.domain.SettingState
 import net.dstribe.customize_word_separators.domain.WordParser
+import net.dstribe.customize_word_separators.domain.dto.EditorContext
 import net.dstribe.customize_word_separators.settings.AppSettingsState
 import javax.swing.JTextField
 import kotlin.collections.set
@@ -19,13 +20,15 @@ import kotlin.collections.set
 class MoveCaretWordService {
     private var state: AppSettingsState? = null
 
+    @Suppress("ReturnCount")
     fun moveCaretWord(
-        editor: Editor,
-        caret: Caret,
+        editorContext: EditorContext,
         isNext: Boolean,
         isWithSelection: Boolean,
-        dataContext: DataContext?
     ) {
+        val editor = editorContext.editor
+        val caret = editorContext.caret
+        val dataContext = editorContext.dataContext
         state = SettingState().getAppSettingsState(editor)
 
         val document = editor.document
@@ -56,15 +59,20 @@ class MoveCaretWordService {
 
             /* If at BOL/EOL, move one character */
             if (currentCaretOffset == boundaryOffset) {
-                val moveRange = if (isNext) 1 else -1
-                caret.moveToOffset(currentCaretOffset + moveRange)
-                EditorModificationUtil.scrollToCaret(editor)
-                setupSelection(caret, isWithSelection, selectionStart)
+                val newOffset = if (isNext) 1 else -1
+                MoveCaretCommand(
+                    editorContext,
+                    newOffset,
+                    isWithSelection,
+                    selectionStart
+                ).execute()
                 return
             }
 
-            val textLength = getTextLength(textRangeStartOffset, textRangeEndOffset)
-            val textRange = TextRange.from(textRangeStartOffset, textLength)
+            val textRange = TextRange.from(
+                textRangeStartOffset,
+                getTextLength(textRangeStartOffset, textRangeEndOffset)
+            )
             val lineText = document.getText(textRange)
 
             val matchList = WordParser(state).wordParse(lineText)
@@ -78,9 +86,12 @@ class MoveCaretWordService {
             newOffset = currentCaretOffset + wordLength
         }
 
-        caret.moveToOffset(newOffset)
-        EditorModificationUtil.scrollToCaret(editor)
-        setupSelection(caret, isWithSelection, selectionStart)
+        MoveCaretCommand(
+            editorContext,
+            newOffset,
+            isWithSelection,
+            selectionStart
+        ).execute()
     }
 
     fun moveCaretWordForTextField(
@@ -166,7 +177,7 @@ class MoveCaretWordService {
         return result
     }
 
-    @Suppress("MaxLineLength")
+    @Suppress("MaxLineLength", "MagicNumber")
     private fun getDefaultPatterns(): LinkedHashMap<String, String> {
         val patterns = LinkedHashMap<String, String>(26)
         patterns["cjk"] = "[\\u3400-\\u9FFF\\uF900-\\uFAFF]+"
@@ -220,13 +231,5 @@ class MoveCaretWordService {
 
     private fun getTextLength(textRangeStartOffset: Int, textRangeEndOffset: Int): Int {
         return textRangeEndOffset - textRangeStartOffset
-    }
-
-    private fun setupSelection(caret: Caret, isWithSelection: Boolean, startOffset: Int) {
-        if (isWithSelection) {
-            caret.setSelection(startOffset, caret.offset, true)
-        } else {
-            caret.removeSelection()
-        }
     }
 }

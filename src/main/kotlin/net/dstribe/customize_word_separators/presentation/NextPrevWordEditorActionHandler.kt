@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.Caret
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.actionSystem.EditorActionHandler
 import net.dstribe.customize_word_separators.application.MoveCaretWordService
+import net.dstribe.customize_word_separators.domain.dto.EditorContext
 
 class NextPrevWordEditorActionHandler(
     private val isNext: Boolean,
@@ -16,11 +17,13 @@ class NextPrevWordEditorActionHandler(
         if (caret != null) {
             val moveCaretWordService = MoveCaretWordService()
             moveCaretWordService.moveCaretWord(
-                editor,
-                caret,
+                editorContext = EditorContext(
+                    caret = caret,
+                    editor = editor,
+                    dataContext = dataContext
+                ),
                 isNext,
                 isWithSelection,
-                dataContext
             )
         }
     }
