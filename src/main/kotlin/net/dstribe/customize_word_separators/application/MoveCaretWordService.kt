@@ -128,11 +128,13 @@ class MoveCaretWordService {
                 val wordLength = getWordLength(isNext, matchList)
                 val movedCaretPosition = currentCaretPosition + wordLength
 
-                if (isNext && isWithSelection) {
-                    component.select(component.selectionStart, movedCaretPosition)
-                } else if (isNext) {
-                    component.setCaretPosition(component.selectionEnd)
-                    component.moveCaretPosition(movedCaretPosition)
+                if (isWithSelection) {
+                    if (isNext) {
+                        component.select(component.selectionStart, movedCaretPosition)
+                    } else {
+                        component.setCaretPosition(component.selectionEnd)
+                        component.moveCaretPosition(movedCaretPosition)
+                    }
                 } else {
                     component.caretPosition = movedCaretPosition
                 }
