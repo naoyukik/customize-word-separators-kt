@@ -6,7 +6,7 @@ class WordParser(private val state: AppSettingsState?) {
     private var userCustomPatterns: String? = null
 
     companion object {
-        const val COUNT_PATTERN = 20
+        const val COUNT_PATTERN = 26
     }
 
     init {
