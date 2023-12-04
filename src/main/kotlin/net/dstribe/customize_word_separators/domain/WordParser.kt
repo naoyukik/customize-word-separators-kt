@@ -62,10 +62,9 @@ class WordParser(private val state: AppSettingsState?) {
             return patternMap
         }
 
-        var items = emptyArray<String>()
         val lines = tmpUserCustomPatterns.split("\n").toTypedArray()
         for (line in lines) {
-            items = line.split(",").toTypedArray()
+            val items = line.split(",").toTypedArray()
             patternMap[items[0]] = items[1].trim()
         }
 
