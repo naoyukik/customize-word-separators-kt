@@ -7,6 +7,7 @@ import com.intellij.openapi.util.TextRange
 import net.dstribe.customize_word_separators.domain.BuiltinWordActionCommand
 import net.dstribe.customize_word_separators.domain.MoveCaretCommand
 import net.dstribe.customize_word_separators.domain.SettingState
+import net.dstribe.customize_word_separators.domain.TextOperations
 import net.dstribe.customize_word_separators.domain.WordParser
 import net.dstribe.customize_word_separators.domain.dto.ActionOptions
 import net.dstribe.customize_word_separators.domain.dto.EditorContext
@@ -67,7 +68,7 @@ class MoveCaretWordService {
 
             val textRange = TextRange.from(
                 textRangeStartOffset,
-                getTextLength(textRangeStartOffset, textRangeEndOffset)
+                TextOperations().getTextLength(textRangeStartOffset, textRangeEndOffset)
             )
             val lineText = document.getText(textRange)
 
@@ -81,7 +82,7 @@ class MoveCaretWordService {
                 }
                 return
             }
-            val wordLength = getWordLength(isNext, matchList)
+            val wordLength = TextOperations().getWordLength(isNext, matchList)
             newOffset = currentCaretOffset + wordLength
         }
 
@@ -107,7 +108,7 @@ class MoveCaretWordService {
 
         val (isNext, isWithSelection) = actionOptions
         val textLength =
-            if (isNext) component.getText().length else getTextLength(textRangeStartOffset, currentCaretPosition)
+            if (isNext) component.getText().length else TextOperations().getTextLength(textRangeStartOffset, currentCaretPosition)
         val lineText = if (isNext) {
             component.getText(
                 currentCaretPosition,
@@ -122,7 +123,7 @@ class MoveCaretWordService {
         val matchList = WordParser(state).wordParse(lineText)
         if (matchList.isEmpty()) return
 
-        val wordLength = getWordLength(isNext, matchList)
+        val wordLength = TextOperations().getWordLength(isNext, matchList)
         val movedCaretPosition = currentCaretPosition + wordLength
 
         if (isWithSelection) {
@@ -135,39 +136,5 @@ class MoveCaretWordService {
         } else {
             component.caretPosition = movedCaretPosition
         }
-    }
-
-    private fun getWordLength(isNext: Boolean, matchList: List<String>): Int {
-        val matchSize = matchList.size
-        val position = if (isNext) 0 else matchSize - 1
-        val orientation = if (isNext) 1 else -1
-        return matchList[position].length * orientation
-    }
-
-    private fun useBuiltinWordAction(
-        editorContext: EditorContext,
-        actionOptions: ActionOptions,
-    ) {
-        val (isNext, isWithSelection) = actionOptions
-        val actionManager = EditorActionManager.getInstance()
-
-        var ideAction = IdeActions.ACTION_EDITOR_NEXT_WORD
-        if (isWithSelection && !isNext) {
-            ideAction = IdeActions.ACTION_EDITOR_PREVIOUS_WORD_WITH_SELECTION
-        } else if (!isNext) {
-            ideAction = IdeActions.ACTION_EDITOR_PREVIOUS_WORD
-        } else if (isWithSelection) {
-            ideAction = IdeActions.ACTION_EDITOR_NEXT_WORD_WITH_SELECTION
-        }
-        val actionHandler = actionManager.getActionHandler(ideAction)
-        actionHandler.execute(
-            editorContext.editor,
-            editorContext.caret,
-            editorContext.dataContext
-        )
-    }
-
-    private fun getTextLength(textRangeStartOffset: Int, textRangeEndOffset: Int): Int {
-        return textRangeEndOffset - textRangeStartOffset
     }
 }
