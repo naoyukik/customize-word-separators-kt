@@ -1,11 +1,10 @@
 package net.dstribe.customize_word_separators.application
 
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.IdeActions
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.editor.FoldRegion
-import com.intellij.openapi.editor.actionSystem.EditorActionManager
 import com.intellij.openapi.util.TextRange
+import net.dstribe.customize_word_separators.domain.BuiltinWordActionCommand
 import net.dstribe.customize_word_separators.domain.MoveCaretCommand
 import net.dstribe.customize_word_separators.domain.SettingState
 import net.dstribe.customize_word_separators.domain.WordParser
@@ -75,10 +74,10 @@ class MoveCaretWordService {
             val matchList = WordParser(state).wordParse(lineText)
             if (matchList.isEmpty()) {
                 if (dataContext != null) {
-                    useBuiltinWordAction(
+                    BuiltinWordActionCommand(
                         editorContext,
                         actionOptions
-                    )
+                    ).execute()
                 }
                 return
             }
