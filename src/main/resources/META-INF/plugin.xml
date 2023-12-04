@@ -26,19 +26,19 @@
         <group id="dstribe.customizeWordSeparators" text="Customize Word Separators"
                description="Customize word separators" popup="true">
             <add-to-group group-id="EditMenu" anchor="last"/>
-            <action class="net.dstribe.customize_word_separators.NextWordAction"
+            <action class="net.dstribe.customize_word_separators.presentation.NextWordAction"
                     id="CustomizeWordSeparators.NextWord"
                     text="Move Caret to Next Word"
                     description="Move next word"/>
-            <action class="net.dstribe.customize_word_separators.PrevWordAction"
+            <action class="net.dstribe.customize_word_separators.presentation.PrevWordAction"
                     id="CustomizeWordSeparators.PrevWord"
                     text="Move Caret to Prev Word"
                     description="Move prev word"/>
-            <action class="net.dstribe.customize_word_separators.NextWordWithSelectionAction"
+            <action class="net.dstribe.customize_word_separators.presentation.NextWordWithSelectionAction"
                     id="CustomizeWordSeparators.NextWordWithSelection"
                     text="Move Caret to Next Word with Selection"
                     description="Move next word with Selection"/>
-            <action class="net.dstribe.customize_word_separators.PrevWordWithSelectionAction"
+            <action class="net.dstribe.customize_word_separators.presentation.PrevWordWithSelectionAction"
                     id="CustomizeWordSeparators.PrevWordWithSelection"
                     text="Move Caret to Prev Word with Selection"
                     description="Move prev word with Selection"/>

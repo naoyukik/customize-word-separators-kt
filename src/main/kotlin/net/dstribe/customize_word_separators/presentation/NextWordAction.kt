@@ -1,26 +1,28 @@
-package net.dstribe.customize_word_separators
+package net.dstribe.customize_word_separators.presentation
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.actionSystem.EditorActionHandler
+import net.dstribe.customize_word_separators.application.MoveCaretWordForTextFieldService
+import net.dstribe.customize_word_separators.domain.dto.ActionOptions
 
 class NextWordAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
-        val isNext = true
-        val isWithSelection = false
+        val actionOptions = ActionOptions(
+            isNext = true,
+            isWithSelection = false
+        )
         val editor: Editor? = e.getData(CommonDataKeys.EDITOR)
         editor?.let {
-            val actionHandler: EditorActionHandler = NextPrevWordHandler(
-                myNext = isNext,
-                myWithSelection = isWithSelection,
+            val actionHandler: EditorActionHandler = NextPrevWordEditorActionHandler(
+                actionOptions = actionOptions,
                 e = e
             )
             actionHandler.execute(it, null, e.dataContext)
         } ?: run {
-            val moveCaretWordUtil = MoveCaretWordUtil()
-            moveCaretWordUtil.moveCaretWordForTextField(isNext, isWithSelection, e)
+            MoveCaretWordForTextFieldService().moveCaretWordForTextField(actionOptions, e)
         }
     }
 }

@@ -4,11 +4,11 @@
 
 ## [Unreleased]
 
-## [0.5.0] - 2023-10-15
+## [0.5.5] - 2023-12-04
 
 ### Changed
 
-- Add caret navigation for text fields
+- Refactoring Code
 
 [Unreleased]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.5.0...HEAD
 [0.5.0]: https://github.com/naoyukik/customize-word-separators-kt/commits/v0.5.0
