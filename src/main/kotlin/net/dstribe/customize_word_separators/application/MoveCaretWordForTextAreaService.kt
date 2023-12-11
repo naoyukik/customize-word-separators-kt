@@ -2,6 +2,7 @@ package net.dstribe.customize_word_separators.application
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
+import net.dstribe.customize_word_separators.domain.MoveCaretAtLineBoundariesCommand
 import net.dstribe.customize_word_separators.domain.MoveCaretForTextCommand
 import net.dstribe.customize_word_separators.domain.SettingState
 import net.dstribe.customize_word_separators.domain.TextOperations
@@ -43,19 +44,11 @@ class MoveCaretWordForTextAreaService {
 
         if (currentCaretPosition <= -1) return
 
-        val currentLineNumber = component.getLineOfOffset(currentCaretPosition)
-        val currentLineLastCharOffset = component.getLineEndOffset(currentLineNumber) - 1
-        val currentLineStartCharOffset = component.getLineStartOffset(currentLineNumber)
-        // If at BOL/EOL, move one character
-        if (isNext && currentCaretPosition == currentLineLastCharOffset) {
-            val nextLineStartOffset = component.getLineStartOffset(currentLineNumber + 1)
-            component.caretPosition = nextLineStartOffset
-            return
-        } else if (!isNext && currentCaretPosition == currentLineStartCharOffset) {
-            val prevLineStartOffset = component.getLineEndOffset(currentLineNumber - 1) - 1
-            component.caretPosition = prevLineStartOffset
-            return
-        }
+        val boundariesResult = MoveCaretAtLineBoundariesCommand(
+            actionOptions,
+            component,
+            currentCaretPosition).execute()
+        if (boundariesResult) return
 
         val matchList = WordParser(state).wordParse(lineText)
         if (matchList.isEmpty()) return
