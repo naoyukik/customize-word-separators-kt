@@ -12,14 +12,24 @@ class MoveCaretAtLineBoundariesCommand(
         val currentLineNumber = component.getLineOfOffset(currentCaretPosition)
         val currentLineLastCharOffset = component.getLineEndOffset(currentLineNumber) - 1
         val currentLineStartCharOffset = component.getLineStartOffset(currentLineNumber)
+
         // If at BOL/EOL, move one character
         if (actionOptions.isNext && currentCaretPosition == currentLineLastCharOffset) {
-            val nextLineStartOffset = component.getLineStartOffset(currentLineNumber + 1)
-            component.caretPosition = nextLineStartOffset
+            val lineStartOffset = component.getLineStartOffset(currentLineNumber + 1)
+            if (actionOptions.isWithSelection) {
+                component.select(component.selectionStart, lineStartOffset)
+            } else {
+                component.caretPosition = lineStartOffset
+            }
             return true
         } else if (!actionOptions.isNext && currentCaretPosition == currentLineStartCharOffset) {
-            val prevLineStartOffset = component.getLineEndOffset(currentLineNumber - 1) - 1
-            component.caretPosition = prevLineStartOffset
+            if (currentLineNumber == 0) return true
+            val lineStartOffset = component.getLineEndOffset(currentLineNumber - 1) - 1
+            if (actionOptions.isWithSelection) {
+                component.moveCaretPosition(lineStartOffset)
+            } else {
+                component.caretPosition = lineStartOffset
+            }
             return true
         }
         return false

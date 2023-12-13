@@ -47,7 +47,8 @@ class MoveCaretWordForTextAreaService {
         val boundariesResult = MoveCaretAtLineBoundariesCommand(
             actionOptions,
             component,
-            currentCaretPosition).execute()
+            currentCaretPosition
+        ).execute()
         if (boundariesResult) return
 
         val matchList = WordParser(state).wordParse(lineText)
