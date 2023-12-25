@@ -4,11 +4,12 @@
 
 ## [Unreleased]
 
-## [0.5.5] - 2023-12-04
+## [0.6.0] - 2023-12-25
 
 ### Changed
 
-- Refactoring Code
+- Support for TextArea
+- Library Updates
 
 [Unreleased]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.5.5...HEAD
 [0.5.5]: https://github.com/naoyukik/customize-word-separators-kt/commits/v0.5.5
