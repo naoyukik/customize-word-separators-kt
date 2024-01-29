@@ -11,6 +11,6 @@ class SettingState {
     }
 
     fun getAppSettingsState(e: AnActionEvent): AppSettingsState? {
-        return e.project?.service<AppSettingsState>()
+        return e.project?.getService(AppSettingsState::class.java)
     }
 }

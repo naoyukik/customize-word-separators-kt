@@ -19,8 +19,8 @@ class AppSettingsState : PersistentStateComponent<AppSettingsState.State> {
 
     companion object {
         @JvmStatic
-        fun getInstance(project: Project): AppSettingsState {
-            return project.service()
+        fun getInstance(project: Project): AppSettingsState? {
+            return project.getService(AppSettingsState::class.java)
         }
     }
 
