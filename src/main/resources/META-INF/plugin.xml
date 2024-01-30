@@ -16,12 +16,6 @@
                 serviceImplementation="net.dstribe.customize_word_separators.settings.AppSettingsState"/>
     </extensions>
 
-    <application-components>
-    </application-components>
-
-    <project-components>
-    </project-components>
-
     <actions>
         <group id="dstribe.customizeWordSeparators" text="Customize Word Separators"
                description="Customize word separators" popup="true">
