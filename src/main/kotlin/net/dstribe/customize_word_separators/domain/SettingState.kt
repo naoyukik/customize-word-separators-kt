@@ -1,7 +1,6 @@
 package net.dstribe.customize_word_separators.domain
 
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import net.dstribe.customize_word_separators.settings.AppSettingsState
 
@@ -11,6 +10,6 @@ class SettingState {
     }
 
     fun getAppSettingsState(e: AnActionEvent): AppSettingsState? {
-        return e.project?.service<AppSettingsState>()
+        return e.project?.getService(AppSettingsState::class.java)
     }
 }
