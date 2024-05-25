@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [0.6.2] - 2024-05-21
+
+- Support for IntelliJ version 242 by @naoyukik in https://github.com/naoyukik/customize-word-separators-kt/pull/53
+
 ## [0.6.1] - 2024-01-30
 
 - chore(deps): bump org.jetbrains.kotlin.jvm from 1.9.21 to 1.9.22 by @dependabot in https://github.com/naoyukik/customize-word-separators-kt/pull/26
@@ -17,7 +21,8 @@
 - Support for TextArea
 - Library Updates
 
-[Unreleased]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.1...HEAD
+[Unreleased]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.2...HEAD
+[0.6.2]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/naoyukik/customize-word-separators-kt/commits/v0.6.0
 [0.5.5]: https://github.com/naoyukik/customize-word-separators-kt/commits/v0.5.5
