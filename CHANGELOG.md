@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Support for IntelliJ 2025
+
 ## [0.6.3] - 2024-09-25
 
 - feat: Support for IDEA 243 by @naoyukik in https://github.com/naoyukik/customize-word-separators-kt/pull/67
