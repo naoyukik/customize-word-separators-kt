@@ -17,8 +17,15 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      # Free GitHub Actions Environment Disk Space
+      - name: Maximize Build Space
+        # jlumbroso/free-disk-space@v1.3.1:
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be
+        with:
+          tool-cache: false
+          large-packages: false
 
-      # Check out current repository
+      # Check out the current repository
       - name: Fetch Sources
         uses: actions/checkout@v4
         with:
@@ -33,9 +40,7 @@ jobs:
 
       # Setup Gradle
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
-        with:
-          gradle-home-cache-cleanup: true
+        uses: gradle/actions/setup-gradle@v4
 
       # Set environment variables
       - name: Export Properties
@@ -46,12 +51,12 @@ jobs:
           ${{ github.event.release.body }}
           EOM
           )"
-          
+
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      # Update Unreleased section with the current release note
+      # Update the Unreleased section with the current release note
       - name: Patch Changelog
         if: ${{ steps.properties.outputs.changelog != '' }}
         env:
@@ -90,7 +95,7 @@ jobs:
           git checkout -b $BRANCH
           git commit -am "Changelog update - $VERSION"
           git push --set-upstream origin $BRANCH
-          
+
           gh label create "$LABEL" \
             --description "Pull requests with release changelog update" \
             --force \
