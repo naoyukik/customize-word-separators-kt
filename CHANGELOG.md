@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### chore
+
+- Gradle IntelliJ Plugin to v2
+
+
 ## [0.6.5] - 2025-01-17
 
 ### Changed
