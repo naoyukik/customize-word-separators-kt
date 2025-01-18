@@ -1,20 +1,22 @@
 [versions]
 # libraries
-annotations = "26.0.1"
+detekt-formatting = "1.23.7"
 
 # plugins
-kotlin = "2.1.0"
 changelog = "2.2.1"
-gradleIntelliJPlugin = "1.17.4"
-qodana = "0.1.13"
-kover = "0.8.3"
+intelliJPlatform = "2.2.1"
+kotlin = "2.1.0"
+kover = "0.9.1"
+qodana = "2024.3.4"
+detekt = "1.23.7"
 
 [libraries]
-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "annotations" }
+detektFormatting = {group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt-formatting"}
 
 [plugins]
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
-gradleIntelliJPlugin = { id = "org.jetbrains.intellij", version.ref = "gradleIntelliJPlugin" }
+intelliJPlatform = { id = "org.jetbrains.intellij.platform", version.ref = "intelliJPlatform" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 qodana = { id = "org.jetbrains.qodana", version.ref = "qodana" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
