@@ -1,6 +1,6 @@
 [versions]
 # libraries
-detekt-formatting = "1.23.7"
+detekt-formatting = "1.23.8"
 
 # plugins
 changelog = "2.2.1"
