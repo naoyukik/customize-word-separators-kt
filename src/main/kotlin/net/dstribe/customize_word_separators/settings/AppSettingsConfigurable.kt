@@ -2,19 +2,24 @@ package net.dstribe.customize_word_separators.settings
 
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogPanel
+import com.intellij.ui.dsl.builder.AlignX
+import com.intellij.ui.dsl.builder.bindText
+import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.rows
 import org.jetbrains.annotations.Nls
-import javax.swing.JComponent
 
 /**
  * Provides controller functionality for application settings.
  */
-class AppSettingsConfigurable(project: Project) : Configurable {
-    private var mySettingsComponent: AppSettingsComponent? = null
-    private var mySettingsState: AppSettingsState? = null
+class AppSettingsConfigurable(private val project: Project) : Configurable {
+    private val mySettingsState
+        get() = AppSettingsState.getInstance(project)
 
-    init {
-        mySettingsComponent = AppSettingsComponent()
-        mySettingsState = AppSettingsState.getInstance(project)
+    private val mainPanel: DialogPanel by lazy { createUIComponents() }
+
+    companion object {
+        private const val TEXT_AREA_ROWS = 20
     }
 
     @Nls(capitalization = Nls.Capitalization.Title)
@@ -22,28 +27,31 @@ class AppSettingsConfigurable(project: Project) : Configurable {
         return "Customize Word Separators"
     }
 
-    override fun getPreferredFocusedComponent(): JComponent? {
-        return mySettingsComponent?.getPreferredFocusedComponent()
-    }
-
-    override fun createComponent(): JComponent? {
-        mySettingsComponent = AppSettingsComponent()
-        return mySettingsComponent?.getPanel()
+    override fun createComponent(): DialogPanel {
+        return mainPanel
     }
 
     override fun isModified(): Boolean {
-        return mySettingsComponent?.getCustomizedPatterns() != mySettingsState?.myState?.customPattern1
-    }
-
-    override fun apply() {
-        mySettingsState?.myState?.customPattern1 = mySettingsComponent!!.getCustomizedPatterns()
+        return mainPanel.isModified()
     }
 
     override fun reset() {
-        mySettingsComponent?.setCustomizedPatterns(mySettingsState?.myState?.customPattern1)
+        mainPanel.reset()
     }
 
-    override fun disposeUIResources() {
-        mySettingsComponent = null
+    override fun apply() {
+        mainPanel.apply()
+    }
+
+    private fun createUIComponents(): DialogPanel {
+        val state = mySettingsState ?: return panel {}
+        return panel {
+            row("Patterns: ") {
+                textArea()
+                    .bindText(state::customizedPattern)
+                    .align(AlignX.FILL)
+                    .rows(TEXT_AREA_ROWS)
+            }
+        }
     }
 }
