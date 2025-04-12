@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### refactor
+
+- Rebuild the settings screen 
+
 ### chore
 
 - Gradle IntelliJ Plugin to v2
