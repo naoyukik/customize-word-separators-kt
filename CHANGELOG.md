@@ -8,10 +8,10 @@
 
 - Rebuild the settings screen 
 
-### chore
+### Changed
 
 - Gradle IntelliJ Plugin to v2
-
+- Support for IntelliJ 2025.2
 
 ## [0.6.5] - 2025-01-17
 
