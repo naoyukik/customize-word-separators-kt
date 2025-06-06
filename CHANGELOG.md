@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.6.6] - 2025-05-17
+
 ### refactor
 
 - Rebuild the settings screen 
@@ -49,7 +51,8 @@
 - Support for TextArea
 - Library Updates
 
-[Unreleased]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.5...HEAD
+[Unreleased]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.6...HEAD
+[0.6.6]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.5...v0.6.6
 [0.6.5]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.3...v0.6.5
 [0.6.3]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.1...v0.6.2
