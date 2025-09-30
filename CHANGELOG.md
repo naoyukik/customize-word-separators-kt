@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Support for IntelliJ 2025.3
+
 ## [0.6.6] - 2025-05-17
 
 ### refactor
