@@ -1,5 +1,6 @@
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
+import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 plugins {
@@ -108,7 +109,15 @@ intellijPlatform {
 
     pluginVerification {
         ides {
-            recommended()
+            val platformType = IntelliJPlatformType.IntellijIdeaUltimate
+            create(
+                type = platformType,
+                version = providers.gradleProperty("verifierVersionSince")
+            )
+            create(
+                type = platformType,
+                version = providers.gradleProperty("verifierVersionUntil")
+            )
         }
     }
 }

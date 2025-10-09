@@ -6,6 +6,12 @@
 
 ### Changed
 
+- Support for IntelliJ versions 2022.3–2025.2
+
+## [0.6.7] - 2025-09-30
+
+### Changed
+
 - Support for IntelliJ 2025.3
 
 ## [0.6.6] - 2025-05-17
