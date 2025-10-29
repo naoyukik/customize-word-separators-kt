@@ -10,10 +10,10 @@
                 "/gradle.properties$/"
             ],
             "matchStrings": [
-                "gradleVersion=(?<currentValue>[^\\s]+)"
+                "gradleVersion\\s?=\\s?(?<currentValue>[^\\s]+)"
             ],
             "depNameTemplate": "gradle",
-            "autoReplaceStringTemplate": "gradleVersion={{{newValue}}}",
+            "autoReplaceStringTemplate": "gradleVersion = {{{newValue}}}",
             "datasourceTemplate": "gradle-version"
         }
     ]
