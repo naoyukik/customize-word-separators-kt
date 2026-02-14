@@ -6,7 +6,7 @@ detekt-formatting = "1.23.8"
 changelog = "2.4.0"
 intelliJPlatform = "2.11.0"
 kotlin = "2.2.21"
-kover = "0.9.3"
+kover = "0.9.7"
 qodana = "2025.2.1"
 detekt = "1.23.8"
 
