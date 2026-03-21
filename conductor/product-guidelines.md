@@ -10,6 +10,7 @@
 
 ## Technical & Architectural Guidelines
 - **Strict Layered Architecture:** Domain, Application, Presentation, Settings の各層を明確に分離する。特に、IDE 固有の API への依存は可能な限り外層（Presentation, Settings）に閉じ込め、コアロジックを Pure Kotlin に保つ。
+- **Gemini CLI Protocol Enforcement:** プロジェクト固有のスキル（kotlin-custom-word-separators）とフックを活用し、コード品質とアーキテクチャの整合性を自動検証・補助する。
 - **Test-driven Reliability:** `WordParser` などの主要なロジックには包括的なユニットテストを実装し、継続的な品質と回帰バグの防止を保証する。
 - **Modular & Maintainable:** コードの変更が局所적になるよう責務を適切に分割し、将来の IDE バージョンアップに伴うメンテナンスコストを最小限に抑える。
 
