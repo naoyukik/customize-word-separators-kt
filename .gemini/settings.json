@@ -1,0 +1,119 @@
+{
+    "$schema": "https://raw.githubusercontent.com/google-gemini/gemini-cli/main/schemas/settings.schema.json",
+    "mcpServers": {
+        "jetbrains": {
+            "url": "http://localhost:$JETBRAINS_PORT/sse",
+            "headers": {
+                "IJ_MCP_SERVER_PROJECT_PATH": "$IJ_MCP_SERVER_PROJECT_PATH"
+            }
+        },
+        "memory": {
+            "command": "pnpm",
+            "args": [
+                "dlx",
+                "@modelcontextprotocol/server-memory"
+            ],
+            "env": {
+                "MEMORY_FILE_PATH": "$MEMORY_FILE_PATH"
+            }
+        },
+        "sequential-thinking": {
+            "command": "pnpm",
+            "args": [
+                "dlx",
+                "@modelcontextprotocol/server-sequential-thinking"
+            ]
+        }
+    },
+    "model": {
+        "name": "$MODEL_NAME"
+    },
+    "modelConfigs": {
+        "customAliases": {
+            "strict-coder": {
+                "extends": "gemini-3-pro-preview",
+                "modelConfig": {
+                    "generateContentConfig": {
+                        "temperature": 0,
+                        "topP": 0.8,
+                        "topK": 40
+                    }
+                }
+            },
+            "balanced-architect": {
+                "extends": "gemini-3-pro-preview",
+                "modelConfig": {
+                    "generateContentConfig": {
+                        "temperature": 0.6,
+                        "topP": 0.95,
+                        "topK": 64
+                    }
+                }
+            }
+        }
+    },
+    "hooks": {
+        "BeforeTool": [
+            {
+                "matcher": "run_shell_command",
+                "hooks": [
+                    {
+                        "name": "check-ampersand",
+                        "type": "command",
+                        "command": "$PYTHON_COMMAND $GEMINI_PROJECT_DIR/.gemini/hooks/detect_double_ampersand.py",
+                        "description": "PowerShellでの&&利用を制限する"
+                    },
+                    {
+                        "name": "restrict-git-add-all",
+                        "type": "command",
+                        "command": "$PYTHON_COMMAND $GEMINI_PROJECT_DIR/.gemini/hooks/restrict_git_add_all.py",
+                        "description": "git add . や -A を制限する"
+                    },
+                    {
+                        "name": "suggest-conductor-skill",
+                        "type": "command",
+                        "command": "$PYTHON_COMMAND $GEMINI_PROJECT_DIR/.gemini/hooks/suggest_conductor_skill.py",
+                        "description": "/conductor コマンド検出時にスキルの使用を促す"
+                    },
+                    {
+                        "name": "check-get-content",
+                        "type": "command",
+                        "command": "$PYTHON_COMMAND $GEMINI_PROJECT_DIR/.gemini/hooks/detect_get_content_command.py",
+                        "description": "PowerShellでのGet-Content利用を制限する"
+                    }
+                ]
+            }
+        ],
+        "BeforeAgent": [
+            {
+                "matcher": "*",
+                "hooks": [
+                    {
+                        "name": "suggest-conductor-skill",
+                        "type": "command",
+                        "command": "$PYTHON_COMMAND $GEMINI_PROJECT_DIR/.gemini/hooks/suggest_conductor_skill.py",
+                        "description": "/conductor コマンド検出時にスキルの使用を促す"
+                    }
+                ]
+            }
+        ],
+        "SessionStart": [
+            {
+                "matcher": "startup",
+                "hooks": [
+                    {
+                        "name": "python-memory-loader",
+                        "type": "command",
+                        "command": "$PYTHON_COMMAND $GEMINI_PROJECT_DIR/.gemini/hooks/init_memory.py",
+                        "description": "汎用的なメモリロード・フック"
+                    }
+                ]
+            }
+        ]
+    },
+    "skills": {
+        "disabled": [
+            "sequential-thinking"
+        ]
+    }
+}
