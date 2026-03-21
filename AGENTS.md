@@ -12,6 +12,7 @@
 - **個別指定の徹底**: 変更したファイルは原則として個別に `git add <file>` で指定すること。`git add .` や `git add -A`
   は禁止する。
 - **ディレクトリ単位の例外**: `conductor/` 配下のドキュメントのみ、整合性確保のため `git add conductor/` を許可する。
+- **Ignore の尊重**: `git add` およびファイル読み込みの際は、`.gitignore` だけでなく `.geminiignore` を厳格に遵守し、トークン消費と機密情報漏洩を防止せよ。
 - **事前監査**: ステージングの前後で必ず `git diff` を実行し、意図しない変更が含まれていないか確認すること。
 
 ## **2. コミット規約 (Commit Convention)**
@@ -48,14 +49,14 @@ Co-Authored-By: gemini-cli <218195315+gemini-cli@users.noreply.github.com>
 
 ## **4. アーキテクチャ原則 (Architecture Principles)**
 
-本プロジェクトは「クリーンアーキテクチャ」を基盤とする。
+本プロジェクトは「レイヤードアーキテクチャ」を基盤とする。
 
 - **依存の方向性**: 依存の矢印は常に「外側 → 内側（Domain/Application）」へ向けること。
-- **詳細規定**: `conductor/product-guidelines.md` を最高位の設計指針として参照すること。
+- **詳細規定**: `conductor/product-guidelines.md` および `kotlin-custom-word-separators` スキル内の参照資料を最高位の設計指針とすること。
 
 ## **5. 検証と安定性 (Validation & Stability)**
 
-- **手動検証の義務**: 「ユーザー手動検証」タスクは、必ずユーザーによる実機確認と明示的な承認を得ること。
+- **手動検証の義務**: 「ユーザー手動検証」タスクは、`runIde` 等で起動した実際の IDE 環境での動作確認と、ユーザーによる明示的な承認を必須とする。
 
 ## **6. Temporaryファイル**
 
