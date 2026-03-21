@@ -1,20 +1,21 @@
 ---
 name: kotlin-custom-word-separators
-description: Assists in Kotlin development for the "Customize Word Separators" IntelliJ plugin. Provides advanced expertise in layered architecture responsibility management, WordParser regular expressions, and IDE action implementations to ensure the quality of refactoring and feature extensions.
+description: Assists in Kotlin development for the "Customize Word Separators" IntelliJ plugin. Provides advanced expertise in layered architecture responsibility management, WordParser regular expressions, IDE action implementations, and strict naming conventions to ensure the quality of refactoring and feature extensions.
 ---
 
 # Skill: Kotlin Custom Word Separators
 
 このスキルは、IntelliJ プラットフォーム向け「Customize Word Separators」プラグインの保守・拡張を専門とする。
-Gemini CLI は、プロジェクトのアーキテクチャや単語判定ロジックを理解し、高品質なコードを提供する。
+Gemini CLI は、プロジェクトのアーキテクチャや単語判定ロジック、および Kotlin 命名規約を理解し、高品質なコードを提供する。
 
 ## Quick Navigation
-
 詳細な実装ガイドや仕様については、以下の参照資料を読み込むこと。
 
 - **Architecture Details**: [references/architecture.md](./references/architecture.md) を読み込み、各層の責務を確認する。
 - **Word Parser Specifications**: [references/word-parser-patterns.md](./references/word-parser-patterns.md)
   を読み込み、単語判定に使用される正規表現と改善方針を確認する。
+- **Naming Conventions**: [references/naming-conventions.md](./references/naming-conventions.md)
+  を読み込み、本プロジェクトにおける命名標準を確認する。
 
 ## Implementation Workflows
 
