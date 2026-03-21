@@ -49,9 +49,9 @@ Co-Authored-By: gemini-cli <218195315+gemini-cli@users.noreply.github.com>
 
 ## **4. アーキテクチャ原則 (Architecture Principles)**
 
-本プロジェクトは「レイヤードアーキテクチャ」を基盤とする。
+本プロジェクトは、**依存性逆転の法則 (DIP) を核とした「クリーンアーキテクチャ」**を基盤とする。
 
-- **依存の方向性**: 依存の矢印は常に「外側 → 内側（Domain/Application）」へ向けること。
+- **依存の方向性**: 依存の矢印は常に「外側 → 内側（Domain）」へ向けること。Domain 層に定義されたインターフェース（Repository 等）に対し、Infrastructure/Settings 層が依存・実装する構造を厳守せよ。
 - **詳細規定**: `conductor/product-guidelines.md` および `kotlin-custom-word-separators` スキル内の参照資料を最高位の設計指針とすること。
 
 ## **5. 検証と安定性 (Validation & Stability)**

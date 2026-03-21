@@ -1,17 +1,17 @@
 # IntelliJ Plugin Architecture: Customize Word Separators
 
-本プロジェクトは、IntelliJ Platform SDK をベースとしたレイヤードアーキテクチャを採用している。
-各層の責務を厳守し、層を跨ぐ直接的な依存を避けること。
+本プロジェクトは、**依存性逆転の法則 (DIP) を核としたクリーンアーキテクチャ**を採用している。
+各層の責務を厳守し、依存の矢印を常に「外側から内側（Domain）」へと向けること。
 
 ## 1. Domain Layer (`net.dstribe.customize_word_separators.domain`)
-
 - **責務**: 単語区切りの論理計算、正規表現のパース、およびプラットフォーム非依存のコマンド。
+- **DIP の核**: 外部（設定や IDE API）への依存が必要な場合は、この層にインターフェース（Repository 等）を定義し、外層に実装させる。
 - **主要クラス**:
     - `WordParser`: 文字種（CJK, ひらがな, カタカナ等）の判定と単語境界のパース。
     - `BuiltinWordActionCommand`: 標準アクションの代替ロジック。
     - `MoveCaretCommand`: カーソル移動の物理的な指示。
-- **制約**: IntelliJ API への直接依存は最小限（`TextRange` 等の基本的なユーティリティに留める）とし、ビジネスロジックを
-  Pure Kotlin で保つ。
+- **制約**: IntelliJ API への直接依存は厳禁。ビジネスロジックを Pure Kotlin で保ち、ユニットテストを容易にすること。
+
 
 ## 2. Application Layer (`net.dstribe.customize_word_separators.application`)
 
