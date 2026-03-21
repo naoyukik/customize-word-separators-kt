@@ -1,0 +1,93 @@
+# Workspace level policies for customize-word-separators-kt
+
+# 1. Base rule to ask user for most tools (matches existing behavior)
+[[rule]]
+toolName = "*"
+decision = "ask_user"
+priority = 10
+
+# 2. Automatically allow read-only tools from JetBrains MCP
+[[rule]]
+mcpName = "jetbrains"
+toolName = [
+    "build_project",
+    "find_files_by_glob",
+    "find_files_by_name_keyword",
+    "get_all_open_file_paths",
+    "get_file_problems",
+    "get_file_text_by_path",
+    "get_project_dependencies",
+    "get_project_modules",
+    "get_repositories",
+    "get_run_configurations",
+    "get_symbol_info",
+    "list_directory_tree",
+    "open_file_in_editor",
+    "search_in_files_by_regex",
+    "search_in_files_by_text",
+]
+decision = "allow"
+priority = 50
+
+# 2.1 Automatically allow built-in read-only tools
+[[rule]]
+toolName = ["read_file", "list_directory", "glob", "grep_search"]
+decision = "allow"
+priority = 50
+
+# 3. Automatically allow standard skill activation
+[[rule]]
+toolName = "activate_skill"
+decision = "allow"
+priority = 50
+
+# 4. Automatically allow safe git commands
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = ["git status", "git diff", "git log", "git rev-parse", "git config --get", "git branch --show-current"]
+decision = "allow"
+priority = 100
+
+# 6. Automatically allow common utility commands
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = ["ls ", "dir ", "cat ", "tail ", "mkdir ", "Test-Path", "Get-Item"]
+decision = "allow"
+priority = 100
+
+# 7. Automatically allow standard GitHub read operations
+[[rule]]
+mcpName = "github"
+toolName = [
+    "get_label",
+    "issue_read",
+    "list_issue_types",
+    "list_issues",
+    "list_pull_requests",
+    "pull_request_read",
+    "search_issues",
+    "search_pull_requests"
+]
+decision = "allow"
+priority = 100
+
+# 4. Automatically allow safe git commands
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = ["gh issue view", "gh pr view", "gh repo view"]
+decision = "allow"
+priority = 100
+
+# 8. Automatically allow memory operations
+[[rule]]
+mcpName = "memory"
+decision = "allow"
+priority = 100
+
+# 9. Explicitly deny forbidden patterns (Legacy exclude behavior)
+[[rule]]
+toolName = "run_shell_command"
+commandRegex = "git add (\\.|-A)"
+decision = "deny"
+deny_message = "git add . または -A の使用はプロジェクト規約により厳禁されている。ファイルを個別に指定せよ。"
+priority = 999

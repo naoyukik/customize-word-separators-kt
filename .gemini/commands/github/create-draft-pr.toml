@@ -1,0 +1,62 @@
+description = "Draft PRを作成する"
+
+# language=markdown
+prompt = """
+1. 情報収集と分析
+あなたが以下の情報を自動的に収集・分析する。
+以下のコマンドリストは、**修正や最適化を行わず、文字列として完全に一致する状態で**実行すること。別コマンドへの置換は禁止する。
+セキュリティエラーが発生するので `&&` などでコマンドを接続することは禁止する。
+
+    !{echo "=== 現在のブランチ名 ==="}
+    !{git rev-parse --abbrev-ref HEAD}
+    !{echo "=== mainからの差分コミット ==="}
+    !{git log main..HEAD --oneline --pretty=format:"%h - %s"}
+    !{echo "=== リモートURL ==="}
+    !{git remote get-url origin}
+    !{echo "=== PRテンプレート ==="}
+    !{cat "$(git rev-parse --show-toplevel)/.github/pull_request_template.md"}
+    !{echo "=== GitHub CLI確認 ==="}
+    !{gh version}
+    !{echo "=== チケット番号 ==="}
+    !{git rev-parse --abbrev-ref HEAD | grep -oE '^[0-9]+'}
+    !{echo "=== Actual Code Changes (Diff) ロックファイルなどのノイズを除外し、本質的な変更差分のみを取得する ==="}
+    !{git diff main..HEAD -- . ':(exclude)package-lock.json' ':(exclude)yarn.lock' ':(exclude)*.lock'}
+
+2. Issueの確認 (GraphQL-Scalpel)
+チケット番号が存在する場合、Issueの内容を確認するため、必ず以下の **GraphQL-Scalpel** プロトコルを使用して情報を取得すること。
+
+    - **情報取得**: `gh api graphql -f query='query($owner: String!, $name: String!, $num: Int!) { repository(owner: $owner, name: $name) { issue(number: $num) { title body } } }' -f owner='naoyukik' -f name='customize-word-separators-kt' -F num=TICKET_NUMBER` を実行し、背景情報を抽出する。
+
+3. 推論と構築 (Reasoning)
+取得した情報を以下の優先順位で統合し、PRの内容を構築せよ。
+
+    1. **Diff情報**: 実際のコード変更が最優先。「何をしたか」の事実とする。
+    2. **Issue情報**: 「なぜそれをしたか」の背景情報として利用する。
+    3. **Commit情報**: 作業の流れを補足する情報として利用する。
+
+4. PR内容の生成
+分析結果に基づき、以下の項目を生成する。
+
+    * **PRタイトル**: 変更内容の要点を的確に表現したタイトルを生成する。
+    * **PR本文**: 読み込んだテンプレートに基づき、変更の概要、背景、詳細などを具体的に記述する。テンプレートがない場合は適当に作る。
+    * **Issue連携**: 関連するIssueを自動的に閉じるため、本文内に必ず `Closes #チケット番号` の形式で記述を含めること。
+    * チケット番号の頭には `#` を付与する。
+
+5. コマンド生成と実行
+   GitHub CLI (`gh`) を使用して Draft PR を作成する。
+
+    * `--draft`: Draft PRとして作成する。
+    * `--title`: 生成したPRタイトルを設定する。
+    * `--body`: 生成したPR本文を設定する。
+    * `--base`: ベースブランチは常に`main`とする。
+    * `--head`: 自動取得した現在のブランチ名を設定する。
+    * `--assignee`: "@me" を設定する。
+
+    a. **GitHub CLI (gh) を使用する**:
+       - `run_shell_command` を使用し、上記の仕様で `gh pr create` を実行する。
+    b. **いずれも使用できない場合**:
+       - 実行すべき `gh pr create` コマンドとその引数をテキストとして出力する。
+
+4. 結果報告
+    PRが正常に作成されたことをユーザーに報告する。
+"""

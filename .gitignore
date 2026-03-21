@@ -4,3 +4,14 @@
 build
 *.pem
 certificate
+.env
+/.intellijPlatform
+
+
+# Exclude everything below this point from gminiignore
+# local files
+# A folder for storing files you want to manage but not commit
+*.local
+
+# AI files
+*.local.md
