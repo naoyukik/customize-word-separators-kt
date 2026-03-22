@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.6.9] - 2026-03-22
+
 - Support for IntelliJ versions 2026.1
 
 ## [0.6.8] - 2025-10-10
@@ -65,7 +67,8 @@
 - Support for TextArea
 - Library Updates
 
-[Unreleased]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.8...HEAD
+[Unreleased]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.9...HEAD
+[0.6.9]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.8...v0.6.9
 [0.6.8]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.7...v0.6.8
 [0.6.7]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.6...v0.6.7
 [0.6.6]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.5...v0.6.6
