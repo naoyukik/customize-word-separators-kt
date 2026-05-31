@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.6.10] - 2026-05-31
+
 ### Changed
 
 - Support for IntelliJ versions 2026.2
@@ -71,16 +73,17 @@
 - Support for TextArea
 - Library Updates
 
-[Unreleased]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.9...HEAD
-[0.6.9]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.8...v0.6.9
-[0.6.8]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.7...v0.6.8
-[0.6.7]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.6...v0.6.7
-[0.6.6]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.5...v0.6.6
-[0.6.5]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.3...v0.6.5
-[0.6.3]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.2...v0.6.3
-[0.6.2]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.1...v0.6.2
-[0.6.1]: https://github.com/naoyukik/customize-word-separators-kt/compare/v0.6.0...v0.6.1
-[0.6.0]: https://github.com/naoyukik/customize-word-separators-kt/commits/v0.6.0
+[Unreleased]: https://github.com/naoyukik/customize-word-separators-kt/compare/0.6.10...HEAD
+[0.6.10]: https://github.com/naoyukik/customize-word-separators-kt/compare/0.6.9...0.6.10
+[0.6.9]: https://github.com/naoyukik/customize-word-separators-kt/compare/0.6.8...0.6.9
+[0.6.8]: https://github.com/naoyukik/customize-word-separators-kt/compare/0.6.7...0.6.8
+[0.6.7]: https://github.com/naoyukik/customize-word-separators-kt/compare/0.6.6...0.6.7
+[0.6.6]: https://github.com/naoyukik/customize-word-separators-kt/compare/0.6.5...0.6.6
+[0.6.5]: https://github.com/naoyukik/customize-word-separators-kt/compare/0.6.3...0.6.5
+[0.6.3]: https://github.com/naoyukik/customize-word-separators-kt/compare/0.6.2...0.6.3
+[0.6.2]: https://github.com/naoyukik/customize-word-separators-kt/compare/0.6.1...0.6.2
+[0.6.1]: https://github.com/naoyukik/customize-word-separators-kt/compare/0.6.0...0.6.1
+[0.6.0]: https://github.com/naoyukik/customize-word-separators-kt/commits/0.6.0
 [0.5.5]: https://github.com/naoyukik/customize-word-separators-kt/commits/v0.5.5
 [0.5.0]: https://github.com/naoyukik/customize-word-separators-kt/commits/v0.5.0
 [0.4.6]: https://github.com/naoyukik/customize-word-separators-kt/commits/v0.4.6
