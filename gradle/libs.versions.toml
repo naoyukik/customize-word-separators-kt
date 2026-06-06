@@ -5,7 +5,7 @@ detekt-formatting = "1.23.8"
 # plugins
 changelog = "2.5.0"
 intelliJPlatform = "2.16.0"
-kotlin = "2.3.21"
+kotlin = "2.4.0"
 kover = "0.9.7"
 qodana = "2025.3.2"
 detekt = "1.23.8"
