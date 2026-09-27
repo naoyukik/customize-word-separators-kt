@@ -18,4 +18,3 @@
 - **Detekt:** Static code analysis for Kotlin
 - **Qodana:** JetBrains quality platform
 - **Gradle Changelog Plugin:** 管理された変更履歴の維持
-- **Gemini CLI Custom Hooks & Skills:** 開発プロセスの自動検証とガイド
