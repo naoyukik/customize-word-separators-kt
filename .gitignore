@@ -8,10 +8,16 @@ certificate
 /.intellijPlatform
 
 
-# Exclude everything below this point from gminiignore
-# local files
-# A folder for storing files you want to manage but not commit
+# Storing folders and files you want to manage but not commit
 *.local
+*.local.*
 
 # AI files
-*.local.md
+AGENTS.override.md
+.inline-review-notes
+
+# Codex CLI
+.codex/config.toml
+
+# Junie CLI
+.junie

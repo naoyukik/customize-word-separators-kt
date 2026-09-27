@@ -5,6 +5,10 @@
 
 ---
 
+## IntelliJ index MCP tools
+
+IMPORTANT: When applicable, prefer using intellij-index MCP tools for code navigation and refactoring.
+
 ## **1. Git 操作原則 (Git Standards)**
 
 履歴の整合性と透明性を保つため、一括操作を避け、厳密なステージングを行うこと。
@@ -12,7 +16,7 @@
 - **個別指定の徹底**: 変更したファイルは原則として個別に `git add <file>` で指定すること。`git add .` や `git add -A`
   は禁止する。
 - **ディレクトリ単位の例外**: `conductor/` 配下のドキュメントのみ、整合性確保のため `git add conductor/` を許可する。
-- **Ignore の尊重**: `git add` およびファイル読み込みの際は、`.gitignore` だけでなく `.geminiignore` を厳格に遵守し、トークン消費と機密情報漏洩を防止せよ。
+- **Ignore の尊重**: `git add` およびファイル読み込みの際は、`.gitignore` を厳格に遵守し、トークン消費と機密情報漏洩を防止せよ。
 - **事前監査**: ステージングの前後で必ず `git diff` を実行し、意図しない変更が含まれていないか確認すること。
 
 ## **2. コミット規約 (Commit Convention)**
@@ -28,7 +32,6 @@
 - **空行**
 - **参照**: `ref: IssueNumber` を記述すること。IssueNumberはGitブランチの `^[0-9]+-` にマッチする数字のこと
 - **空行**
-- **署名**: メッセージ末尾に `Co-Authored-By: gemini-cli <218195315+gemini-cli@users.noreply.github.com>` を付与すること。
 
 e.g. ブランチ名: 188-implement-unit-tests
 
@@ -38,8 +41,6 @@ test: WordParser のユニットテストを実装
 - 単語パースロジックの正当性を自動検証するために実装した 
 
 ref: 188
-
-Co-Authored-By: gemini-cli <218195315+gemini-cli@users.noreply.github.com>
 ```
 
 ## **3. コミュニケーションと言語 (Communication)**
