@@ -6,7 +6,7 @@ description: Assists in Kotlin development for the "Customize Word Separators" I
 # Skill: Kotlin Custom Word Separators
 
 このスキルは、IntelliJ プラットフォーム向け「Customize Word Separators」プラグインの保守・拡張を専門とする。
-Gemini CLI は、プロジェクトのアーキテクチャや単語判定ロジック、および Kotlin 命名規約を理解し、高品質なコードを提供する。
+AIエージェントは、プロジェクトのアーキテクチャや単語判定ロジック、および Kotlin 命名規約を理解し、高品質なコードを提供する。
 
 ## Quick Navigation
 詳細な実装ガイドや仕様については、以下の参照資料を読み込むこと。
