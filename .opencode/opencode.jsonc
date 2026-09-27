@@ -1,0 +1,79 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": false,
+  "shell": "C:\\Program Files\\Git\\bin\\bash.exe",
+  "model": "opencode/Big Pickle",
+  "mcp": {
+    "jetbrains": {
+      "type": "remote",
+      "url": "http://127.0.0.1:64522/stream"
+    },
+    "mempalace": {
+      "type": "local",
+      "command": ["mempalace-mcp"]
+    },
+    "intellij-index" : {
+      "type": "remote",
+      "url": "http://127.0.0.1:29178/index-mcp/streamable-http"
+    }
+  },
+  "watcher": {
+    "ignore": [
+      "node_modules/**",
+      "dist/**",
+      "build/**",
+      ".git/**",
+      "**/*.min.js",
+      "**/*.map",
+      "**/*.lock"
+    ]
+  },
+  "compaction": {
+    "auto": true,
+    "prune": true
+  },
+  "plugins": [
+    "./plugins/v2/init.ts",
+    "./plugins/v2/ValidateArchitectureTsHook.ts",
+    "./plugins/v2/MemPalaceAutosaveHook.ts"
+  ],
+  "agent": {
+    "conductor-review": {
+      "mode": "subagent",
+      "description": "Conductorトラックの完了成果物をレビューするサブエージェント。plan.md、spec.md、コードスタイルガイドに基づいてコードレビューを実行し、レポートを出力する。",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "git diff *": "allow",
+          "git log *": "allow",
+          "git status *": "allow",
+          "git rev-parse *": "allow",
+          "git branch --show-current": "allow",
+          ".\\gradlew test *": "allow",
+          ".\\gradlew :test *": "allow",
+          "dir *": "allow",
+          "ls *": "allow",
+          "cat *": "allow"
+        }
+      }
+    },
+    "create-draft-pr": {
+      "mode": "subagent",
+      "description": "GitHub Draft PRを作成するサブエージェント。ブランチ差分、Issue情報、コミット履歴を収集し、構造化された日本語PRタイトル本文を生成してgh CLIで作成する。",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "git rev-parse *": "allow",
+          "git log *": "allow",
+          "git remote get-url origin": "allow",
+          "git diff *": "allow",
+          "cat *": "allow",
+          "gh version": "allow",
+          "gh pr create *": "allow",
+          "gh api graphql *": "allow",
+          "grep *": "allow"
+        }
+      }
+    }
+  }
+}
