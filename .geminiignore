@@ -1,6 +1,0 @@
-.gradle
-.idea
-.qodana
-build
-*.pem
-certificate
