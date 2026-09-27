@@ -18,39 +18,52 @@
 
 ## Phase 0: 調査と解決可否の検証
 
-- [ ] Task: 2026.3 のビルド番号と配布状況を一次情報で調査する
+- [x] Task: 2026.3 のビルド番号と配布状況を一次情報で調査する
   - Subtask: `autonomous-researcher` スキルに従い、`data.services.jetbrains.com` と `plugins.jetbrains.com/docs/intellij/build-number-ranges.html` を再確認する。
   - Subtask: 2026.3 の安定版が EAP 段階にあることを前提としたまま、263 ブランチの最新ビルド番号を特定する。
   - Subtask: 調査結果を `assets/evidence_report_template.md` の形式で Evidence Report として本 Phase の記録に残す。
-- [ ] Task: `platformVersion=263.5701.42` の解決可否を実地検証する
+  - **結果**: 最新 EAP は `263.5701.42`（2026-09-25）。2026.3 安定版は未公開。最新安定版は `262.10968.63`（2026.2.3）。`assets/evidence_report.md` を作成。
+- [x] Task: `platformVersion=263.5701.42` の解決可否を実地検証する
   - Subtask: `gradle.properties` の一時的な書き換えにより Gradle が 263 を解決できるかを `./gradlew dependencies --configuration intellijPlatformDependency` 等の解決のみを行うタスクで確認する。
   - Subtask: 解決できない場合、`useInstaller = false` による multi-OS archive 解決と `jetbrainsRuntime()` の明示を追加する fallback を試す。
   - Subtask: snapshots リポジトリに存在する `263.5701.42-EAP-SNAPSHOT` / `263.5701.42-EAP` をそのまま `platformVersion` に書く案も比較検討する。
   - Subtask: 検証結果に合わせて `build.gradle.kts` の修正要否を確定する。
-- [ ] Task: 2026.3 固有の API 破壊の有無を調査する
+  - **結果**: `263.5701.42-EAP-SNAPSHOT` は Maven に存在しない（404）。installer 経由の解決は成立し、`buildPlugin` は成功。`compileClasspath` の全 JAR が `idea-263.5701.42-win/lib/` 配下であることを確認。`build.gradle.kts` の修正は不要と確定。
+- [x] Task: 2026.3 固有の API 破壊の有無を調査する
   - Subtask: IntelliJ Platform SDK の Incompatible API Changes（2026.3 節）を調査する。
   - Subtask: 本プラグインが使用する `AnAction`、`AnActionEvent`、`Editor`、`TextField`、`TextArea`、`projectConfigurable` に破壊がないか照合する。
-- [ ] Task: 2026.3 安定版公開時の follow-up 方針を確定する
+  - **結果**: 削除対象は Kotlin UI DSL 1.0（`com.intellij.ui.layout.*`）、OkHttp、`Sdk` の `UserDataHolderEx` 継承、`intellij.platform.debugger` 等のモジュール分割。いずれも本プラグインは未使用。Kotlin UI DSL 2 のみを使用しているため影響なし。
+- [x] Task: 2026.3 安定版公開時の follow-up 方針を確定する
   - Subtask: 公開後の再検証として必要なタスクを整理し、Phase 3 で起票する Issue の内容を作成する。
-- [ ] Task: Conductor - Static Analysis (Detekt) & Format Check。&&は使えないので個別に実行すること。
-- [ ] Task: Conductor - `gradle check` を実行して品質を検証
-- [ ] Task: Conductor - User Manual Verification 'Phase 0: 調査と解決可否の検証' (Protocol in workflow.md)
-- [ ] Task: Conductor - 'Phase 0: 調査と解決可否の検証' の成果をコミット
+  - **結果**: 内容を `temporary.local/followup-issue-draft.md` に作成済み。起票は Phase 3 の Task 2 で実施する。
+- [x] Task: バイトコード・レベルと `pluginSinceBuild` の不整合を実測する
+  - Subtask: Marketplace から公開済み 0.6.10 を取得し、class file version を実測する。
+  - Subtask: 旧 JVM で実際にクラスをロードし `UnsupportedClassVersionError` の発生を実証する。
+  - **結果**: 0.6.8〜0.6.10 は `since-build="223"` を宣言しながら全クラスが major 65（Java 21）。2022.3〜2024.1 は Java 17 ランタイムのためロード不能。Plugin Verifier は class file version を検査しないため検証は通るが、実行時ロードは失敗する。spec.md Decisions 決定 5 として `pluginSinceBuild=242` へ上げる方針をユーザーが 2026-09-28 に承認。
+- [x] Task: Conductor - Static Analysis (Detekt) & Format Check。&&は使えないので個別に実行すること。
+  - **結果**: `detektFormatCheck` というタスクは存在しない。`./gradlew detekt` は成功。`src/` の差分ゼロ。
+- [x] Task: Conductor - `gradle check` を実行して品質を検証
+  - **結果**: 19 tasks 実行、BUILD SUCCESSFUL。Kover レポート生成。
+- [x] Task: Conductor - User Manual Verification 'Phase 0: 調査と解決可否の検証' (Protocol in workflow.md)
+  - **結果**: ユーザーが Phase 0 の成果を承認し、Phase 1 への進行を許可した。
+- [x] Task: Conductor - 'Phase 0: 調査と解決可否の検証' の成果をコミット
 
 ## Phase 1: ビルド設定とドキュメントの bump
 
 - [ ] Task: `gradle.properties` のバージョンを更新する
   - Subtask: `pluginVersion` を `0.6.11` にする。
+  - Subtask: `pluginSinceBuild` を `242` にする（Decisions 決定 5。Java 21 バイトコードと整合させる）。
   - Subtask: `pluginUntilBuild` を `263.*` にする。
-  - Subtask: `verifierVersionUntil` を Phase 0 で確定した 2026.3 のビルド番号にする。
-  - Subtask: `platformVersion` を Phase 0 で確定した 2026.3 のビルド番号にする。
-  - Subtask: `pluginSinceBuild`、`verifierVersionSince`、`platformType` は変更しないことを `git diff` で確認する。
+  - Subtask: `verifierVersionSince` を `2024.2.6` にする（宣言下限 242 系の最新リリース）。
+  - Subtask: `verifierVersionUntil` を `263.5701.42` にする（Phase 0 で確定済み）。
+  - Subtask: `platformVersion` を `263.5701.42` にする（Phase 0 で確定済み）。
+  - Subtask: `platformType` は変更しないことを `git diff` で確認する。
 - [ ] Task: `CHANGELOG.md` にエントリを追加する
   - Subtask: `## [Unreleased]` 配下に `### Changed` セクションを追加する。
   - Subtask: 内容は「Support for IntelliJ versions 2026.3」となり、過去 4 回のエントリ表現に揃える。
   - Subtask: ファイル末尾の比較リンク定義に `[Unreleased]` への参照が既存のまま有効であることを確認する。
 - [ ] Task: `conductor/tech-stack.md` のサポート表記を更新する
-  - Subtask: `IntelliJ Platform SDK` 行の「IntelliJ IDEA 2022.3 - 2025.2 Support」を「2022.3 - 2026.3 Support」に修正する。
+  - Subtask: `IntelliJ Platform SDK` 行の「IntelliJ IDEA 2022.3 - 2025.2 Support」を「2024.2 - 2026.3 Support」に修正する（決定 5 により下限は 242）。
 - [ ] Task: Conductor - Static Analysis (Detekt) & Format Check。&&は使えないので個別に実行すること。
 - [ ] Task: Conductor - `gradle check` を実行して品質を検証
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: ビルド設定とドキュメントの bump' (Protocol in workflow.md)
@@ -64,7 +77,7 @@
   - Subtask: 生成された ZIP の `META-INF/plugin.xml` に `until-build="263.*"` が反映されていることを確認する。
 - [ ] Task: Plugin Verifier の結果を検証する
   - Subtask: `./gradlew verifyPlugin` を実行する。
-  - Subtask: 検証対象が `2022.3.3` と `263.5701.42` の両建てになっていることを確認する。
+  - Subtask: 検証対象が `2024.2.6` と `263.5701.42` の両建てになっていることを確認する。
   - Subtask: 報告された `compatibility problem` を全て解消する（決定 3）。
   - Subtask: 解消不能な報告が出た場合は、影響範囲と回避策を本 Phase の記録に明記してユーザーに相談する。
 - [ ] Task: 全体品質を検証する
@@ -97,7 +110,8 @@
 
 ## 完了条件
 
-- `gradle.properties` の 4 値が目標値に到達している。
+- `gradle.properties` の 6 値（`pluginVersion`、`pluginSinceBuild`、`pluginUntilBuild`、`verifierVersionSince`、`verifierVersionUntil`、`platformVersion`）が目標値に到達している。
+- `platformType` は `IU` のまま変更されていない。
 - `CHANGELOG.md` に 2026.3 対応のエントリがある。
 - `./gradlew buildPlugin` と `./gradlew verifyPlugin` が成功している。
 - 2026.3 IDE での手動検証にユーザーが承認している。
