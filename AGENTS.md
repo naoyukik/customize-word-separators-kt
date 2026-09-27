@@ -5,6 +5,10 @@
 
 ---
 
+## IntelliJ index MCP tools
+
+IMPORTANT: When applicable, prefer using intellij-index MCP tools for code navigation and refactoring.
+
 ## **1. Git 操作原則 (Git Standards)**
 
 履歴の整合性と透明性を保つため、一括操作を避け、厳密なステージングを行うこと。
