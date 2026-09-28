@@ -95,7 +95,7 @@
 
 ## Requirements
 
-- `gradle.properties` の5値、`pluginSinceBuild`・`pluginUntilBuild`・`verifierVersionUntil`・`platformVersion`・`pluginVersion` を目標値へ更新する。
+- `gradle.properties` の6値、`pluginVersion`・`pluginSinceBuild`・`pluginUntilBuild`・`verifierVersionSince`・`verifierVersionUntil`・`platformVersion` を目標値へ更新する。`platformType` は据え置きとする。
 - `CHANGELOG.md` の `## [Unreleased]` 配下に 2026.3 対応のエントリを追加する。
 - `./gradlew buildPlugin` と `./gradlew verifyPlugin` が成功する。
 - Plugin Verifier が報告する `compatibility problem` は本トラック内で解消する。

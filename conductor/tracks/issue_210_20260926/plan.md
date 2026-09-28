@@ -101,23 +101,34 @@
 
 ## Phase 3: 実機での手動検証とリリース準備
 
-- [ ] Task: `runIde` で 2026.3 IDE を起動して動作を確認する
+- [x] Task: `runIde` で 2026.3 IDE を起動して動作を確認する
   - Subtask: `./gradlew runIde` を実行する（決定 4）。
   - Subtask: 起動した IDE のバージョンが 2026.3 であることを確認する。
   - Subtask: 4 アクションそれぞれについて、漢字・ひらがな・カタカナ・英数字の区切りでカーソルが移動することを IDE 上で確認する。
   - Subtask: 選択付きアクション（Next with Selection / Prev with Selection）の選択範囲が正しいことを確認する。
   - Subtask: TextField と TextArea 上でも移動が機能することを確認する。
   - Subtask: 設定画面（Preferences | Settings | Customize Word Separators）が正常に開くことを確認する。
-- [ ] Task: follow-up Issue を起票する
+  - **結果**: 2026-09-28 にユーザーが `runIde` で起動した 2026.3 IDE 上で動作確認を完了したと報告を受けた。
+- [x] Task: follow-up Issue を起票する
   - Subtask: 2026.3 安定版公開後に EAP ビルド番号を正式版へ差し替える Issue を作成する。
   - Subtask: Issue には現在の EAP ビルド番号と、使用した公開手順（marketplace / ./gradlew publishPlugin）を記載する。
-- [ ] Task: 最終差分の監査を実施する
+  - **結果**: 2026-09-28 にユーザー判断。安定版対応 Issue は必要になった時点で起票する方针のため今回は起票せず。代わりに `conductor/tech-stack.md` の陳腐化バージョン表記の修正 Issue を #212 として起票した。
+- [x] Task: Issue #148 をクローズする
+  - Subtask: `pluginSinceBuild` を 242 へ上げたことで対応下限の拡張が不可能になった旨を Issue 本文に追記する。
+  - Subtask: 調査で判明した事実（公開済み 0.6.8 以降のバイトコード・レベル不整合、Plugin Verifier が class file version を検査しないこと）を記載する。
+  - Subtask: `not planned` としてクローズする。
+  - **結果**: コメント `issuecomment-5868010016` を投稿し、`state=CLOSED` / `stateReason=NOT_PLANNED` でクローズした。ユーザー承認済み。
+- [x] Task: 最終差分の監査を実施する
   - Subtask: `git diff main...HEAD` で意図しない変更が含まれていないことを確認する。
   - Subtask: spec.md の Requirements 項目が全て充足されているか 1 項目ずつ照合する。
-- [ ] Task: Conductor - Static Analysis (Detekt) & Format Check。&&は使えないので個別に実行すること。
-- [ ] Task: Conductor - `gradle check` を実行して品質を検証
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: 実機での手動検証とリリース準備' (Protocol in workflow.md)
-- [ ] Task: Conductor - 'Phase 3: 実機での手動検証とリリース準備' の成果をコミット
+  - **結果**: 差分対象は 9 ファイル（`CHANGELOG.md` / `conductor/**` / `gradle.properties`）のみで、いずれも意図した変更。`src/` と `build.gradle.kts` の差分はゼロ。Requirements 6 項目のうち 5 項目が充足。手動検証を要する 1 項目（`runIde` での 4 アクション確認）は Task 1 で充足した。
+- [x] Task: Conductor - Static Analysis (Detekt) & Format Check。&&は使えないので個別に実行すること。
+  - **結果**: `UP-TO-DATE`（ソース変更なし）。BUILD SUCCESSFUL。
+- [x] Task: Conductor - `gradle check` を実行して品質を検証
+  - **結果**: BUILD SUCCESSFUL。19 tasks。
+- [x] Task: Conductor - User Manual Verification 'Phase 3: 実機での手動検証とリリース準備' (Protocol in workflow.md)
+  - **結果**: 2026-09-28 にユーザーが `runIde` での動作確認の完了を報告。Issue #148 のクローズと follow-up Issue B（#212）の起票を承認。
+- [x] Task: Conductor - 'Phase 3: 実機での手動検証とリリース準備' の成果をコミット
 
 ## 完了条件
 
@@ -127,3 +138,23 @@
 - `./gradlew buildPlugin` と `./gradlew verifyPlugin` が成功している。
 - 2026.3 IDE での手動検証にユーザーが承認している。
 - follow-up Issue が起票されている。
+  - 起票済み: #212（`conductor/tech-stack.md` の陳腐化バージョン表記の修正）
+  - 起票見送り: 2026.3 安定版対応。必要になった時点で起票する（ユーザー判断）
+
+## 実施結果サマリ
+
+全 Phase 完了です。
+
+| Phase | 成果 |
+| --- | --- |
+| 0 | 調査と解決可否の検証。2026.3 EAP 263.5701.42 の installer 解決が成立することを実地検証。spec.md の事実誤認 2 点を訂正。`assets/evidence_report.md` を追加 |
+| 1 | `gradle.properties` の 6 値を更新。`CHANGELOG.md` と `conductor/tech-stack.md` を更新 |
+| 2 | `buildPlugin` と `verifyPlugin` が成功。Plugin Verifier が 242.26775.15 と 263.5701.42 の両方で `Compatible` を返し `compatibility problem` は 0 件 |
+| 3 | `runIde` での手動検証を完了。Issue #148 をクローズ。follow-up Issue #212 を起票 |
+
+副次的な成果として、公開済み 0.6.8 以降に存在したバイトコード・レベルと `pluginSinceBuild` の不整合を解消した。
+
+## 残存リスク
+
+- 2026.3 は EAP ビルド（263.5701.42）のまま。EAP はビルド間で API が動くため、stable 公開時の再検証が必要。この作業は次回 release 時に行う。
+- `src/test` は空のまま。ユニットテストの実装は Issue #188 の管轄。
