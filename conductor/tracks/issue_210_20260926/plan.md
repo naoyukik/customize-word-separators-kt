@@ -76,22 +76,28 @@
 
 ## Phase 2: ビルドと Plugin Verifier 検証
 
-- [ ] Task: プラグインのビルドが成功することを確認する
+- [x] Task: プラグインのビルドが成功することを確認する
   - Subtask: `./gradlew buildPlugin` を実行する。
   - Subtask: 263 でコンパイルエラーが出た場合、TDD サイクル（red → green → refactor）を適用して修正する。
   - Subtask: 生成された ZIP の `META-INF/plugin.xml` に `until-build="263.*"` が反映されていることを確認する。
-- [ ] Task: Plugin Verifier の結果を検証する
+  - **結果**: BUILD SUCCESSFUL（37s）。コンパイルエラーなし、`src/` の修正は不要。`buildSearchableOptions` が 370 configurables を列挙。生成物 `build/distributions/customize-word-separators-kt-0.6.11.zip`（39161 bytes）を展開して確認：`META-INF/plugin.xml` が `since-build="242" until-build="263.*"`、`<version>0.6.11</version>`。全 24 クラスの class file version は major 65（Java 21）で、`pluginSinceBuild=242`（2024.2 = Java 21 ランタイム）と整合。
+- [x] Task: Plugin Verifier の結果を検証する
   - Subtask: `./gradlew verifyPlugin` を実行する。
   - Subtask: 検証対象が `2024.2.6` と `263.5701.42` の両建てになっていることを確認する。
   - Subtask: 報告された `compatibility problem` を全て解消する（決定 3）。
   - Subtask: 解消不能な報告が出た場合は、影響範囲と回避策を本 Phase の記録に明記してユーザーに相談する。
-- [ ] Task: 全体品質を検証する
+  - **結果**: BUILD SUCCESSFUL（8m 31s）。検証対象は `IU-242.26775.15`（= `2024.2.6`）と `IU-263.5701.42` の 2 件。両者とも verdict は `Compatible` で、`compatibility problem` は 0 件。解消を要する報告はなかった。両者とも `Dynamic Plugin Eligibility: Plugin can probably be enabled or disabled without IDE restart`。
+- [x] Task: 全体品質を検証する
   - Subtask: `./gradlew check` を実行する。
   - Subtask: Kover のカバレッジレポートが生成されることを確認する。しきい値は設定されていないため 0% でも失敗しない。
-- [ ] Task: Conductor - Static Analysis (Detekt) & Format Check。&&は使えないので個別に実行すること。
-- [ ] Task: Conductor - `gradle check` を実行して品質を検証
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: ビルドと Plugin Verifier 検証' (Protocol in workflow.md)
-- [ ] Task: Conductor - 'Phase 2: ビルドと Plugin Verifier 検証' の成果をコミット
+  - **結果**: BUILD SUCCESSFUL。19 tasks。Kover のレポート生成を確認。
+- [x] Task: Conductor - Static Analysis (Detekt) & Format Check。&&は使えないので個別に実行すること。
+  - **結果**: `UP-TO-DATE`（ソース変更なし）。BUILD SUCCESSFUL。
+- [x] Task: Conductor - `gradle check` を実行して品質を検証
+  - **結果**: BUILD SUCCESSFUL。19 tasks。
+- [x] Task: Conductor - User Manual Verification 'Phase 2: ビルドと Plugin Verifier 検証' (Protocol in workflow.md)
+  - **結果**: 2026-09-28 にユーザーが Phase 2 の成果を承認。`compatibility problem` 0 件のためソース修正は不要。
+- [x] Task: Conductor - 'Phase 2: ビルドと Plugin Verifier 検証' の成果をコミット
 
 ## Phase 3: 実機での手動検証とリリース準備
 
