@@ -5,7 +5,7 @@
 - **Java:** JVM Toolchain 21 (Runtime Compatibility)
 
 ## Frameworks & Platform
-- **IntelliJ Platform SDK:** IntelliJ IDEA 2022.3 - 2025.2 Support
+- **IntelliJ Platform SDK:** IntelliJ IDEA 2024.2 - 2026.3 Support
 - **Gradle IntelliJ Platform Plugin:** v2.0+
 
 ## Build & Dependencies

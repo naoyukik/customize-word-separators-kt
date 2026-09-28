@@ -50,7 +50,7 @@
 
 ## Phase 1: ビルド設定とドキュメントの bump
 
-- [ ] Task: `gradle.properties` のバージョンを更新する
+- [x] Task: `gradle.properties` のバージョンを更新する
   - Subtask: `pluginVersion` を `0.6.11` にする。
   - Subtask: `pluginSinceBuild` を `242` にする（Decisions 決定 5。Java 21 バイトコードと整合させる）。
   - Subtask: `pluginUntilBuild` を `263.*` にする。
@@ -58,16 +58,21 @@
   - Subtask: `verifierVersionUntil` を `263.5701.42` にする（Phase 0 で確定済み）。
   - Subtask: `platformVersion` を `263.5701.42` にする（Phase 0 で確定済み）。
   - Subtask: `platformType` は変更しないことを `git diff` で確認する。
-- [ ] Task: `CHANGELOG.md` にエントリを追加する
+  - **結果**: 5 値を変更。`git diff` で `platformType = IU` が変更されていないことを確認済み。
+- [x] Task: `CHANGELOG.md` にエントリを追加する
   - Subtask: `## [Unreleased]` 配下に `### Changed` セクションを追加する。
   - Subtask: 内容は「Support for IntelliJ versions 2026.3」となり、過去 4 回のエントリ表現に揃える。
   - Subtask: ファイル末尾の比較リンク定義に `[Unreleased]` への参照が既存のまま有効であることを確認する。
-- [ ] Task: `conductor/tech-stack.md` のサポート表記を更新する
+  - **結果**: `### Changed` を追加。下限縮小（2022.3〜2024.1）の明記についてユーザーに確認し、2 行での記載とした。`[Unreleased]` のリンク定義は `0.6.10...HEAD` のままで有効。
+- [x] Task: `conductor/tech-stack.md` のサポート表記を更新する
   - Subtask: `IntelliJ Platform SDK` 行の「IntelliJ IDEA 2022.3 - 2025.2 Support」を「2024.2 - 2026.3 Support」に修正する（決定 5 により下限は 242）。
-- [ ] Task: Conductor - Static Analysis (Detekt) & Format Check。&&は使えないので個別に実行すること。
-- [ ] Task: Conductor - `gradle check` を実行して品質を検証
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: ビルド設定とドキュメントの bump' (Protocol in workflow.md)
-- [ ] Task: Conductor - 'Phase 1: ビルド設定とドキュメントの bump' の成果をコミット
+- [x] Task: Conductor - Static Analysis (Detekt) & Format Check。&&は使えないので個別に実行すること。
+  - **結果**: `./gradlew detekt` は `UP-TO-DATE`（ソース変更なし）。BUILD SUCCESSFUL。
+- [x] Task: Conductor - `gradle check` を実行して品質を検証
+  - **結果**: 19 tasks 実行、BUILD SUCCESSFUL。Kover のレポート生成を確認。
+- [x] Task: Conductor - User Manual Verification 'Phase 1: ビルド設定とドキュメントの bump' (Protocol in workflow.md)
+  - **結果**: 2026-09-28 にユーザーが Phase 1 の成果を承認。CHANGELOG に下限縮小を明記する方針も同日承認。
+- [x] Task: Conductor - 'Phase 1: ビルド設定とドキュメントの bump' の成果をコミット
 
 ## Phase 2: ビルドと Plugin Verifier 検証
 
