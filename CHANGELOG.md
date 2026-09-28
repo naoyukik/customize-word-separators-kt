@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Support for IntelliJ versions 2026.3
+- Drop support for IntelliJ versions 2022.3–2024.1 (those IDEs run on Java 17 and cannot load the Java 21 bytecode this plugin ships)
+
 ## [0.6.10] - 2026-05-31
 
 ### Changed

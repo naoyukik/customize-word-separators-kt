@@ -1,0 +1,160 @@
+# Implementation Plan: IntelliJ 2026.3 対応
+
+**Track**: issue_210_20260926
+**Type**: feature
+**Spec**: [spec.md](./spec.md)
+
+## 前提条件
+
+- 作業ブランチは `main` から切り出す。命名規則は `<issue-number>-<slug>` とし、210 の場合は `210-support-intellij-20263` を使う。
+- フェーズを跨いだ変更を一つのコミットに混在させない。
+- 各フェーズは完了時にユーザー承認を得てから次へ進む。
+
+## テスト方針
+
+本 Issue はビルド設定の bump が中心であり、新規のロジックは追加しない。
+
+`src/test` には現在テストが存在せず、Unit Test の追加は未解決の Issue #188 の管轄である。既存テストの green 維持のみを本トラックの検証条件とする。ただし Phase 2 で 263 起因のソース修正が必要になった場合は、その修正に対してのみ TDD（red → green → refactor）を適用する。
+
+## Phase 0: 調査と解決可否の検証
+
+- [x] Task: 2026.3 のビルド番号と配布状況を一次情報で調査する
+  - Subtask: `autonomous-researcher` スキルに従い、`data.services.jetbrains.com` と `plugins.jetbrains.com/docs/intellij/build-number-ranges.html` を再確認する。
+  - Subtask: 2026.3 の安定版が EAP 段階にあることを前提としたまま、263 ブランチの最新ビルド番号を特定する。
+  - Subtask: 調査結果を `assets/evidence_report_template.md` の形式で Evidence Report として本 Phase の記録に残す。
+  - **結果**: 最新 EAP は `263.5701.42`（2026-09-25）。2026.3 安定版は未公開。最新安定版は `262.10968.63`（2026.2.3）。`assets/evidence_report.md` を作成。
+- [x] Task: `platformVersion=263.5701.42` の解決可否を実地検証する
+  - Subtask: `gradle.properties` の一時的な書き換えにより Gradle が 263 を解決できるかを `./gradlew dependencies --configuration intellijPlatformDependency` 等の解決のみを行うタスクで確認する。
+  - Subtask: 解決できない場合、`useInstaller = false` による multi-OS archive 解決と `jetbrainsRuntime()` の明示を追加する fallback を試す。
+  - Subtask: snapshots リポジトリに存在する `263.5701.42-EAP-SNAPSHOT` / `263.5701.42-EAP` をそのまま `platformVersion` に書く案も比較検討する。
+  - Subtask: 検証結果に合わせて `build.gradle.kts` の修正要否を確定する。
+  - **結果**: `263.5701.42-EAP-SNAPSHOT` は Maven に存在しない（404）。installer 経由の解決は成立し、`buildPlugin` は成功。`compileClasspath` の全 JAR が `idea-263.5701.42-win/lib/` 配下であることを確認。`build.gradle.kts` の修正は不要と確定。
+- [x] Task: 2026.3 固有の API 破壊の有無を調査する
+  - Subtask: IntelliJ Platform SDK の Incompatible API Changes（2026.3 節）を調査する。
+  - Subtask: 本プラグインが使用する `AnAction`、`AnActionEvent`、`Editor`、`TextField`、`TextArea`、`projectConfigurable` に破壊がないか照合する。
+  - **結果**: 削除対象は Kotlin UI DSL 1.0（`com.intellij.ui.layout.*`）、OkHttp、`Sdk` の `UserDataHolderEx` 継承、`intellij.platform.debugger` 等のモジュール分割。いずれも本プラグインは未使用。Kotlin UI DSL 2 のみを使用しているため影響なし。
+- [x] Task: 2026.3 安定版公開時の follow-up 方針を確定する
+  - Subtask: 公開後の再検証として必要なタスクを整理し、Phase 3 で起票する Issue の内容を作成する。
+  - **結果**: 内容を `temporary.local/followup-issue-draft.md` に作成済み。起票は Phase 3 の Task 2 で実施する。
+- [x] Task: バイトコード・レベルと `pluginSinceBuild` の不整合を実測する
+  - Subtask: Marketplace から公開済み 0.6.10 を取得し、class file version を実測する。
+  - Subtask: 旧 JVM で実際にクラスをロードし `UnsupportedClassVersionError` の発生を実証する。
+  - **結果**: 0.6.8〜0.6.10 は `since-build="223"` を宣言しながら全クラスが major 65（Java 21）。2022.3〜2024.1 は Java 17 ランタイムのためロード不能。Plugin Verifier は class file version を検査しないため検証は通るが、実行時ロードは失敗する。spec.md Decisions 決定 5 として `pluginSinceBuild=242` へ上げる方針をユーザーが 2026-09-28 に承認。
+- [x] Task: Conductor - Static Analysis (Detekt) & Format Check。&&は使えないので個別に実行すること。
+  - **結果**: `detektFormatCheck` というタスクは存在しない。`./gradlew detekt` は成功。`src/` の差分ゼロ。
+- [x] Task: Conductor - `gradle check` を実行して品質を検証
+  - **結果**: 19 tasks 実行、BUILD SUCCESSFUL。Kover レポート生成。
+- [x] Task: Conductor - User Manual Verification 'Phase 0: 調査と解決可否の検証' (Protocol in workflow.md)
+  - **結果**: ユーザーが Phase 0 の成果を承認し、Phase 1 への進行を許可した。
+- [x] Task: Conductor - 'Phase 0: 調査と解決可否の検証' の成果をコミット
+
+## Phase 1: ビルド設定とドキュメントの bump
+
+- [x] Task: `gradle.properties` のバージョンを更新する
+  - Subtask: `pluginVersion` を `0.6.11` にする。
+  - Subtask: `pluginSinceBuild` を `242` にする（Decisions 決定 5。Java 21 バイトコードと整合させる）。
+  - Subtask: `pluginUntilBuild` を `263.*` にする。
+  - Subtask: `verifierVersionSince` を `2024.2.6` にする（宣言下限 242 系の最新リリース）。
+  - Subtask: `verifierVersionUntil` を `263.5701.42` にする（Phase 0 で確定済み）。
+  - Subtask: `platformVersion` を `263.5701.42` にする（Phase 0 で確定済み）。
+  - Subtask: `platformType` は変更しないことを `git diff` で確認する。
+  - **結果**: 5 値を変更。`git diff` で `platformType = IU` が変更されていないことを確認済み。
+- [x] Task: `CHANGELOG.md` にエントリを追加する
+  - Subtask: `## [Unreleased]` 配下に `### Changed` セクションを追加する。
+  - Subtask: 内容は「Support for IntelliJ versions 2026.3」となり、過去 4 回のエントリ表現に揃える。
+  - Subtask: ファイル末尾の比較リンク定義に `[Unreleased]` への参照が既存のまま有効であることを確認する。
+  - **結果**: `### Changed` を追加。下限縮小（2022.3〜2024.1）の明記についてユーザーに確認し、2 行での記載とした。`[Unreleased]` のリンク定義は `0.6.10...HEAD` のままで有効。
+- [x] Task: `conductor/tech-stack.md` のサポート表記を更新する
+  - Subtask: `IntelliJ Platform SDK` 行の「IntelliJ IDEA 2022.3 - 2025.2 Support」を「2024.2 - 2026.3 Support」に修正する（決定 5 により下限は 242）。
+- [x] Task: Conductor - Static Analysis (Detekt) & Format Check。&&は使えないので個別に実行すること。
+  - **結果**: `./gradlew detekt` は `UP-TO-DATE`（ソース変更なし）。BUILD SUCCESSFUL。
+- [x] Task: Conductor - `gradle check` を実行して品質を検証
+  - **結果**: 19 tasks 実行、BUILD SUCCESSFUL。Kover のレポート生成を確認。
+- [x] Task: Conductor - User Manual Verification 'Phase 1: ビルド設定とドキュメントの bump' (Protocol in workflow.md)
+  - **結果**: 2026-09-28 にユーザーが Phase 1 の成果を承認。CHANGELOG に下限縮小を明記する方針も同日承認。
+- [x] Task: Conductor - 'Phase 1: ビルド設定とドキュメントの bump' の成果をコミット
+
+## Phase 2: ビルドと Plugin Verifier 検証
+
+- [x] Task: プラグインのビルドが成功することを確認する
+  - Subtask: `./gradlew buildPlugin` を実行する。
+  - Subtask: 263 でコンパイルエラーが出た場合、TDD サイクル（red → green → refactor）を適用して修正する。
+  - Subtask: 生成された ZIP の `META-INF/plugin.xml` に `until-build="263.*"` が反映されていることを確認する。
+  - **結果**: BUILD SUCCESSFUL（37s）。コンパイルエラーなし、`src/` の修正は不要。`buildSearchableOptions` が 370 configurables を列挙。生成物 `build/distributions/customize-word-separators-kt-0.6.11.zip`（39161 bytes）を展開して確認：`META-INF/plugin.xml` が `since-build="242" until-build="263.*"`、`<version>0.6.11</version>`。全 24 クラスの class file version は major 65（Java 21）で、`pluginSinceBuild=242`（2024.2 = Java 21 ランタイム）と整合。
+- [x] Task: Plugin Verifier の結果を検証する
+  - Subtask: `./gradlew verifyPlugin` を実行する。
+  - Subtask: 検証対象が `2024.2.6` と `263.5701.42` の両建てになっていることを確認する。
+  - Subtask: 報告された `compatibility problem` を全て解消する（決定 3）。
+  - Subtask: 解消不能な報告が出た場合は、影響範囲と回避策を本 Phase の記録に明記してユーザーに相談する。
+  - **結果**: BUILD SUCCESSFUL（8m 31s）。検証対象は `IU-242.26775.15`（= `2024.2.6`）と `IU-263.5701.42` の 2 件。両者とも verdict は `Compatible` で、`compatibility problem` は 0 件。解消を要する報告はなかった。両者とも `Dynamic Plugin Eligibility: Plugin can probably be enabled or disabled without IDE restart`。
+- [x] Task: 全体品質を検証する
+  - Subtask: `./gradlew check` を実行する。
+  - Subtask: Kover のカバレッジレポートが生成されることを確認する。しきい値は設定されていないため 0% でも失敗しない。
+  - **結果**: BUILD SUCCESSFUL。19 tasks。Kover のレポート生成を確認。
+- [x] Task: Conductor - Static Analysis (Detekt) & Format Check。&&は使えないので個別に実行すること。
+  - **結果**: `UP-TO-DATE`（ソース変更なし）。BUILD SUCCESSFUL。
+- [x] Task: Conductor - `gradle check` を実行して品質を検証
+  - **結果**: BUILD SUCCESSFUL。19 tasks。
+- [x] Task: Conductor - User Manual Verification 'Phase 2: ビルドと Plugin Verifier 検証' (Protocol in workflow.md)
+  - **結果**: 2026-09-28 にユーザーが Phase 2 の成果を承認。`compatibility problem` 0 件のためソース修正は不要。
+- [x] Task: Conductor - 'Phase 2: ビルドと Plugin Verifier 検証' の成果をコミット
+
+## Phase 3: 実機での手動検証とリリース準備
+
+- [x] Task: `runIde` で 2026.3 IDE を起動して動作を確認する
+  - Subtask: `./gradlew runIde` を実行する（決定 4）。
+  - Subtask: 起動した IDE のバージョンが 2026.3 であることを確認する。
+  - Subtask: 4 アクションそれぞれについて、漢字・ひらがな・カタカナ・英数字の区切りでカーソルが移動することを IDE 上で確認する。
+  - Subtask: 選択付きアクション（Next with Selection / Prev with Selection）の選択範囲が正しいことを確認する。
+  - Subtask: TextField と TextArea 上でも移動が機能することを確認する。
+  - Subtask: 設定画面（Preferences | Settings | Customize Word Separators）が正常に開くことを確認する。
+  - **結果**: 2026-09-28 にユーザーが `runIde` で起動した 2026.3 IDE 上で動作確認を完了したと報告を受けた。
+- [x] Task: follow-up Issue を起票する
+  - Subtask: 2026.3 安定版公開後に EAP ビルド番号を正式版へ差し替える Issue を作成する。
+  - Subtask: Issue には現在の EAP ビルド番号と、使用した公開手順（marketplace / ./gradlew publishPlugin）を記載する。
+  - **結果**: 2026-09-28 にユーザー判断。安定版対応 Issue は必要になった時点で起票する方针のため今回は起票せず。代わりに `conductor/tech-stack.md` の陳腐化バージョン表記の修正 Issue を #212 として起票した。
+- [x] Task: Issue #148 をクローズする
+  - Subtask: `pluginSinceBuild` を 242 へ上げたことで対応下限の拡張が不可能になった旨を Issue 本文に追記する。
+  - Subtask: 調査で判明した事実（公開済み 0.6.8 以降のバイトコード・レベル不整合、Plugin Verifier が class file version を検査しないこと）を記載する。
+  - Subtask: `not planned` としてクローズする。
+  - **結果**: コメント `issuecomment-5868010016` を投稿し、`state=CLOSED` / `stateReason=NOT_PLANNED` でクローズした。ユーザー承認済み。
+- [x] Task: 最終差分の監査を実施する
+  - Subtask: `git diff main...HEAD` で意図しない変更が含まれていないことを確認する。
+  - Subtask: spec.md の Requirements 項目が全て充足されているか 1 項目ずつ照合する。
+  - **結果**: 差分対象は 9 ファイル（`CHANGELOG.md` / `conductor/**` / `gradle.properties`）のみで、いずれも意図した変更。`src/` と `build.gradle.kts` の差分はゼロ。Requirements 6 項目のうち 5 項目が充足。手動検証を要する 1 項目（`runIde` での 4 アクション確認）は Task 1 で充足した。
+- [x] Task: Conductor - Static Analysis (Detekt) & Format Check。&&は使えないので個別に実行すること。
+  - **結果**: `UP-TO-DATE`（ソース変更なし）。BUILD SUCCESSFUL。
+- [x] Task: Conductor - `gradle check` を実行して品質を検証
+  - **結果**: BUILD SUCCESSFUL。19 tasks。
+- [x] Task: Conductor - User Manual Verification 'Phase 3: 実機での手動検証とリリース準備' (Protocol in workflow.md)
+  - **結果**: 2026-09-28 にユーザーが `runIde` での動作確認の完了を報告。Issue #148 のクローズと follow-up Issue B（#212）の起票を承認。
+- [x] Task: Conductor - 'Phase 3: 実機での手動検証とリリース準備' の成果をコミット
+
+## 完了条件
+
+- `gradle.properties` の 6 値（`pluginVersion`、`pluginSinceBuild`、`pluginUntilBuild`、`verifierVersionSince`、`verifierVersionUntil`、`platformVersion`）が目標値に到達している。
+- `platformType` は `IU` のまま変更されていない。
+- `CHANGELOG.md` に 2026.3 対応のエントリがある。
+- `./gradlew buildPlugin` と `./gradlew verifyPlugin` が成功している。
+- 2026.3 IDE での手動検証にユーザーが承認している。
+- follow-up Issue が起票されている。
+  - 起票済み: #212（`conductor/tech-stack.md` の陳腐化バージョン表記の修正）
+  - 起票見送り: 2026.3 安定版対応。必要になった時点で起票する（ユーザー判断）
+
+## 実施結果サマリ
+
+全 Phase 完了です。
+
+| Phase | 成果 |
+| --- | --- |
+| 0 | 調査と解決可否の検証。2026.3 EAP 263.5701.42 の installer 解決が成立することを実地検証。spec.md の事実誤認 2 点を訂正。`assets/evidence_report.md` を追加 |
+| 1 | `gradle.properties` の 6 値を更新。`CHANGELOG.md` と `conductor/tech-stack.md` を更新 |
+| 2 | `buildPlugin` と `verifyPlugin` が成功。Plugin Verifier が 242.26775.15 と 263.5701.42 の両方で `Compatible` を返し `compatibility problem` は 0 件 |
+| 3 | `runIde` での手動検証を完了。Issue #148 をクローズ。follow-up Issue #212 を起票 |
+
+副次的な成果として、公開済み 0.6.8 以降に存在したバイトコード・レベルと `pluginSinceBuild` の不整合を解消した。
+
+## 残存リスク
+
+- 2026.3 は EAP ビルド（263.5701.42）のまま。EAP はビルド間で API が動くため、stable 公開時の再検証が必要。この作業は次回 release 時に行う。
+- `src/test` は空のまま。ユニットテストの実装は Issue #188 の管轄。
