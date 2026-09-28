@@ -14,7 +14,7 @@
 
 - IntelliJ Platform Gradle Plugin 2.x の 既定は installer 解決（`useInstaller = true`）で、installer は公開リリースのみを配信する。
 - 一方で EAP チャンネルの installer は `https://download.jetbrains.com/idea/idea-263.5701.42.exe` に存在する（HTTP 200 を確認済み）。
-- Maven リポジトリ側では bare な `263.5701.42` は存在せず、`263.5701.42-EAP-SNAPSHOT` 之类的サフィックス付きも `intellij-repository/snapshots` に存在しない（HTTP 404 を確認済み）。
+- Maven リポジトリ側では bare な `263.5701.42` は存在せず、`263.5701.42-EAP-SNAPSHOT` のようなサフィックス付きの座標も `intellij-repository/snapshots` に存在しない（HTTP 404 を確認済み）。
 - 参考として、現在の `262.6653.22` も `intellij-repository/releases` には存在せず（404）、installer 経由でのみ取得可能である。
 - 以上から `platformVersion=263.5701.42` の installer 解決は成立すると考えられる。Phase 0 の実地検証（後述「Phase 0 検証結果」）で成立を確定した。
 
@@ -84,7 +84,7 @@
 | 2 | pluginVersion | 0.6.11（過去 4 回と同じパッチリリース方針） |
 | 3 | 検証で問題が出た場合 | 本トラック内で修正まで完了させる |
 | 4 | 手動検証の方法 | `runIde` で起動した 2026.3 IDE で検証する |
-| 5 | バイトコード・レベルと `pluginSinceBuild` の不整合 | `pluginSinceBuild` を 242 へ上げて宣言と実態を揃える（2026-09-28  user's decision） |
+| 5 | バイトコード・レベルと `pluginSinceBuild` の不整合 | `pluginSinceBuild` を 242 へ上げて宣言と実態を揃える（2026-09-28 にユーザーが決定） |
 
 決定 5 の根拠:
 
@@ -114,7 +114,7 @@
 
 | ファイル | 変更内容 |
 | --- | --- |
-| `gradle.properties` | 5 値のバージョン bump |
+| `gradle.properties` | 6 値のバージョン bump（`platformType` は据え置き） |
 | `CHANGELOG.md` | `## [Unreleased]` にエントリ追加 |
 | `conductor/tech-stack.md` | サポートバージョン表記の更新 |
 | `conductor/tracks/issue_210_20260926/assets/evidence_report.md` | Phase 0 の調査報告（新規追加） |
@@ -151,4 +151,4 @@
 | EAP installer が Gradle から解決できない | ビルド不能 | **解消済み**。Phase 0 で installer 経由の解決が成立することを実地検証した。追加の Gradle 設定変更は不要 |
 | 263 で API が破壊されている | コンパイルエラー | **解消済み**。Phase 0 で 263 に対するコンパイルとプラグインロードが成功することを確認した。使用 API に削除対象は含まれない |
 | `untilBuild=263.*` で下限側が壊れる | 回帰 | `verifierVersionSince=2024.2.6` による Plugin Verifier の下限検証を維持する。242（Java 21）〜263（Java 25）の両方で Java 21 バイトコードがロード可能であることを確認済み |
-| EAP はビルド間で API が動く | 公開後に動作しなくなる | 安定版公開時の再検証を follow-up Issue 化する（Phase 3 で起票） |
+| EAP はビルド間で API が動く | 公開後に動作しなくなる | 安定版公開時の再検証は次回リリース時に実施する。2026-09-28 のユーザー判断により Issue 化は保留し、必要になった時点で起票する |

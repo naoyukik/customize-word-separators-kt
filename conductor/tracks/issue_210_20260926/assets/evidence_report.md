@@ -68,17 +68,17 @@
 ### Option B: Clean Architecture
 - **[Change Targets]**: `pluginSinceBuild` を 242（2024.2 = Java 21）へ引き上げ、`jvmToolchain` を明示的に 21 で固定、`platformVersion` はサポート下限（2022.3.3）に固定。
 - **[Pros]**: 公式推奨（最も古い SDK でビルド）に合致。バイトコード・レベルと `sinceBuild` の整合が恒久的に取れ、保守コストが最小。
-- **[Cons/Risks]**: Issue #148「fix: Expand supported IntelliJ versions」の意図（223 への対応を拡張する）に反する。2022.3〜2024.1 ユーザーがプラグインを更新できなくなる。**Issue #148 の管轄넘어서는変更となる。**
+- **[Cons/Risks]**: Issue #148「fix: Expand supported IntelliJ versions」の意図（223 への対応を拡張する）に反する。2022.3〜2024.1 ユーザーがプラグインを更新できなくなる。**Issue #148 の管轄を超える変更となる。**
 - **[Validation Plan]**: `verifyPlugin` による下限・上限の両建て検証。
 
 ### Option C: Pragmatic Balance
 - **[Change Targets]**: `platformVersion` は据え置き（Java 21 でビルド可能な版）、`pluginUntilBuild` のみ `263.*` へ。
 - **[Pros]**: ビルド環境の変更が不要。
-- **[Cons/Risks]**: 263 の API 破壊をコンパイル時に検出できない。`buildSearchableOptions` や `runIde` によるフォールバック検証のみ。万一 263 で API が消えていた場合にリリース联社する。
+- **[Cons/Risks]**: 263 の API 破壊をコンパイル時に検出できない。`buildSearchableOptions` や `runIde` によるフォールバック検証のみ。万一 263 で API が消えていた場合にリリース波及する。
 - **[Validation Plan]**: `verifyPlugin`（263 に対する検証のみ実効）。
 
 - **[Recommended Option]**: **Option A**
-- **[Reason]**: 実測により 263.5701.42 の解決・コンパイル・IDE 上でのプラグインロードがすべて成立し、生成物のバイトコードは Java 21（major 65）のまま維持される。`pluginSinceBuild=223` を据え置けるため Option B の副作用（223〜241 のサポート断）が回避できる。Option C は 263 で発生しうる API 破壊をコンパイル時に検証できないため、万一のリリース联社リスクが残る。
+- **[Reason]**: 実測により 263.5701.42 の解決・コンパイル・IDE 上でのプラグインロードがすべて成立し、生成物のバイトコードは Java 21（major 65）のまま維持される。`pluginSinceBuild=223` を据え置けるため Option B の副作用（223〜241 のサポート断）が回避できる。Option C は 263 で発生しうる API 破壊をコンパイル時に検証できないため、万一のリリース波及リスクが残る。
 
 ## 6. 推奨される実装方針 (Implementation Strategy)
 
